@@ -1,4 +1,3 @@
-# Here you can define all your datasets by using simple YAML syntax.
-#
-# Documentation for this file format can be found in "The Data Catalog"
-# Link: https://docs.kedro.org/en/stable/data/data_catalog.html
+raw_medical_data_csv:
+  type: kedro_datasets.pandas.CSVDataset
+  filepath: data/01_raw/medical_insurance_cost.csv

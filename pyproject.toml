@@ -28,3 +28,6 @@ attr = "medicalcost.__version__"
 [tool.setuptools.packages.find]
 where = [ "src",]
 namespaces = false
+
+[tool.kedro_telemetry]
+project_id = "3fe34c00c0e345a8989c5775a2c360c7"
