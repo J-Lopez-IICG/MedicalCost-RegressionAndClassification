@@ -13,7 +13,7 @@ conf/**/*credentials*
 data/**
 
 # except their sub-folders
-!data/**/
+!data/08_reporting/
 
 # also keep all .gitkeep files
 !.gitkeep
