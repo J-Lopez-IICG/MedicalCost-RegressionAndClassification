@@ -1,3 +1,7 @@
 raw_medical_data_csv:
   type: kedro_datasets.pandas.CSVDataset
   filepath: data/01_raw/medical_insurance_cost.csv
+
+processed_medical_data_excel:
+  type: kedro_datasets.pandas.ExcelDataset
+  filepath: data/02_intermediate/medical_insurance_cost_processed.xlsx
