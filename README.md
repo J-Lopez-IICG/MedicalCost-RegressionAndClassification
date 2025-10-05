@@ -90,10 +90,10 @@ Tras el ajuste de hiperparámetros, el modelo **Random Forest** demostró ser el
 **Resultados Detallados de los Modelos de Clasificación:**
 
 Resultados de los modelos de clasificación:
-Regresión Logística - Accuracy: 0.9000
-Support Vector Classifier (SVC) - Accuracy: 0.9254
-XGBoost - Accuracy: 0.9291
-Random Forest - Accuracy: 0.9403
+*   **`Regresión Logística - Accuracy: 0.9000`**
+*   **`Support Vector Classifier (SVC) - Accuracy: 0.9254`**
+*   **`XGBoost - Accuracy: 0.9291`**
+*   **`Random Forest - Accuracy: 0.9403`**
 
 Este resultado sugiere que, para el problema de clasificación de costos médicos en este dataset, el Random Forest es el modelo más robusto y con mayor capacidad para distinguir entre pacientes de "alto" y "bajo" costo.
 
