@@ -156,7 +156,7 @@ Sigue estos pasos para configurar y ejecutar el proyecto en tu máquina local.
 Primero, clona este repositorio en tu máquina.
 
 ```bash
-git clone https://github.com/J-Lopez-IICG/MedicalCostKedro-WorkInProgress.git
+git clone https://github.com/J-Lopez-IICG/MedicalCostKedro.git
 cd MedicalCostKedro-WorkInProgress
 ```
 
