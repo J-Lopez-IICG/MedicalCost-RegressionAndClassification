@@ -5,3 +5,50 @@ raw_medical_data_csv:
 processed_medical_data_excel:
   type: kedro_datasets.pandas.ExcelDataset
   filepath: data/02_intermediate/medical_insurance_cost_processed.xlsx
+
+# Processed data
+model_input_data:
+  type: kedro_datasets.pandas.CSVDataset
+  filepath: data/05_model_input/medical_insurance_cost_model_input.csv
+
+# Model outputs
+reg_model:
+  type: kedro_datasets.pickle.PickleDataset
+  filepath: data/06_models/linear_regression_model.pkl
+
+r2_score_output:
+  type: kedro_datasets.json.JSONDataset
+  filepath: data/07_model_output/r2_score.json
+
+model_coefficients:
+  type: kedro_datasets.pandas.CSVDataset
+  filepath: data/07_model_output/model_coefficients.csv
+
+# Reporting outputs (plots and text)
+plot_age_vs_charges:
+  type: kedro_datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/age_vs_charges.png
+
+plot_bmi_vs_charges:
+  type: kedro_datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/bmi_vs_charges.png
+
+plot_smoker_vs_charges:
+  type: kedro_datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/smoker_vs_charges.png
+
+plot_bmi_smoker_interaction:
+  type: kedro_datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/bmi_smoker_interaction.png
+
+plot_correlation_heatmap:
+  type: kedro_datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/correlation_heatmap.png
+
+univariate_regression_output:
+  type: kedro_datasets.text.TextDataset
+  filepath: data/08_reporting/univariate_regression_output.txt
+
+model_evaluation_output:
+  type: kedro_datasets.text.TextDataset
+  filepath: data/08_reporting/model_evaluation_output.txt
