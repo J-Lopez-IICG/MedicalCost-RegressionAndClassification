@@ -52,3 +52,82 @@ univariate_regression_output:
 model_evaluation_output:
   type: kedro_datasets.text.TextDataset
   filepath: data/08_reporting/model_evaluation_output.txt
+
+# Classification Processed data
+classification_model_input_data:
+  type: kedro_datasets.pandas.CSVDataset
+  filepath: data/05_model_input/medical_insurance_cost_classification_model_input.csv
+
+# Classification Model outputs
+log_reg_model:
+  type: kedro_datasets.pickle.PickleDataset
+  filepath: data/06_models/logistic_regression_model.pkl
+
+random_forest_model:
+  type: kedro_datasets.pickle.PickleDataset
+  filepath: data/06_models/random_forest_model.pkl
+
+xgboost_model:
+  type: kedro_datasets.pickle.PickleDataset
+  filepath: data/06_models/xgboost_model.pkl
+
+svc_model:
+  type: kedro_datasets.pickle.PickleDataset
+  filepath: data/06_models/svc_model.pkl
+
+classification_accuracy_log_reg:
+  type: kedro_datasets.json.JSONDataset
+  filepath: data/07_model_output/classification_accuracy_log_reg.json
+
+classification_accuracy_rf:
+  type: kedro_datasets.json.JSONDataset
+  filepath: data/07_model_output/classification_accuracy_rf.json
+
+classification_accuracy_xgb:
+  type: kedro_datasets.json.JSONDataset
+  filepath: data/07_model_output/classification_accuracy_xgb.json
+
+classification_accuracy_svc:
+  type: kedro_datasets.json.JSONDataset
+  filepath: data/07_model_output/classification_accuracy_svc.json
+
+classification_report_log_reg:
+  type: kedro_datasets.text.TextDataset
+  filepath: data/07_model_output/classification_report_log_reg.txt
+
+classification_report_rf:
+  type: kedro_datasets.text.TextDataset
+  filepath: data/07_model_output/classification_report_rf.txt
+
+classification_report_xgb:
+  type: kedro_datasets.text.TextDataset
+  filepath: data/07_model_output/classification_report_xgb.txt
+
+classification_report_svc:
+  type: kedro_datasets.text.TextDataset
+  filepath: data/07_model_output/classification_report_svc.txt
+
+log_reg_feature_importance:
+  type: kedro_datasets.pandas.CSVDataset
+  filepath: data/07_model_output/log_reg_feature_importance.csv
+
+# Classification Reporting outputs (plots and text)
+plot_log_reg_feature_importance:
+  type: kedro_datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/log_reg_feature_importance.png
+
+plot_rf_grid_search_heatmap:
+  type: kedro_datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/rf_grid_search_heatmap.png
+
+plot_xgb_grid_search_heatmap:
+  type: kedro_datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/xgb_grid_search_heatmap.png
+
+plot_svc_grid_search_heatmap:
+  type: kedro_datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/svc_grid_search_heatmap.png
+
+classification_summary_output:
+  type: kedro_datasets.text.TextDataset
+  filepath: data/08_reporting/classification_summary.txt

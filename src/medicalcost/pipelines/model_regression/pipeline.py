@@ -21,12 +21,12 @@ def create_pipeline(**kwargs) -> Pipeline:
             node(
                 func=train_model,
                 inputs="model_input_data",
-                outputs=["reg_model", "X_test", "y_test", "y_pred", "X"],
+                outputs=["reg_model", "reg_X_test", "reg_y_test", "y_pred", "X"],
                 name="train_linear_regression_model_node",
             ),
             node(
                 func=evaluate_model,
-                inputs=["reg_model", "X_test", "y_test", "y_pred", "X"],
+                inputs=["reg_model", "reg_X_test", "reg_y_test", "y_pred", "X"],
                 outputs=[
                     "r2_score_output",
                     "model_coefficients",

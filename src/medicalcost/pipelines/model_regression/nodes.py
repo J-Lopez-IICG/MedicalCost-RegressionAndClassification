@@ -36,28 +36,34 @@ def train_model(
     Returns:
         A tuple containing:
             - The trained LinearRegression model.
-            - X_test (DataFrame): Testing features.
-            - y_test (Series): Actual testing targets.
+            - reg_X_test (DataFrame): Testing features.
+            - reg_y_test (Series): Actual testing targets.
             - y_pred (Series): Predicted testing targets.
             - X (DataFrame): All features used for training.
     """
     X = df_model.drop("charges", axis=1)
     y = df_model["charges"]
-    X_train, X_test, y_train, y_test = train_test_split(
+    X_train, reg_X_test, y_train, reg_y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
 
     multi_model = LinearRegression()
     multi_model.fit(X_train, y_train)
-    y_pred = multi_model.predict(X_test)
+    y_pred = multi_model.predict(reg_X_test)
 
-    return multi_model, X_test, y_test, pd.Series(y_pred, index=X_test.index), X
+    return (
+        multi_model,
+        reg_X_test,
+        reg_y_test,
+        pd.Series(y_pred, index=reg_X_test.index),
+        X,
+    )
 
 
 def evaluate_model(
     multi_model: LinearRegression,
-    X_test: pd.DataFrame,
-    y_test: pd.Series,
+    reg_X_test: pd.DataFrame,
+    reg_y_test: pd.Series,
     y_pred: pd.Series,
     X: pd.DataFrame,
 ) -> tuple[float, pd.DataFrame, str]:
@@ -65,8 +71,8 @@ def evaluate_model(
 
     Args:
         multi_model: The trained LinearRegression model.
-        X_test: Testing features.
-        y_test: Actual testing targets.
+        reg_X_test: Testing features.
+        reg_y_test: Actual testing targets.
         y_pred: Predicted testing targets.
         X: All features used for training.
 
@@ -76,7 +82,7 @@ def evaluate_model(
             - coeffs (DataFrame): DataFrame of model coefficients.
             - evaluation_output (str): A formatted string with model evaluation results.
     """
-    r2 = r2_score(y_test, y_pred)
+    r2 = r2_score(reg_y_test, y_pred)
     coeffs = pd.DataFrame(multi_model.coef_, X.columns, columns=["Coeficiente"])
 
     evaluation_output = f"Precisión del Modelo (R-cuadrado): {r2:.4f}\n\n"
