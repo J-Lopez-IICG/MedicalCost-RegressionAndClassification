@@ -7,7 +7,7 @@ requires-python = ">=3.9"
 name = "medicalcost"
 readme = "README.md"
 dynamic = [ "version",]
-dependencies = [ "ipython>=8.10", "jupyterlab>=3.0", "notebook", "kedro[jupyter]~=1.0.0", "kedro-datasets[pandas-csvdataset, pandas-exceldataset, pandas-parquetdataset, spark-sparkdataset, plotly-plotlydataset, plotly-jsondataset, matplotlib-matplotlibwriter]>=3.0", "kedro-viz>=6.7.0", "scikit-learn~=1.5.1", "seaborn~=0.12.1", "setuptools; python_version >= '3.12'",]
+dependencies = [ "ipython>=8.10", "jupyterlab>=3.0", "notebook", "kedro~=1.0.0",]
 
 [project.scripts]
 medicalcost = "medicalcost.__main__:main"
@@ -16,7 +16,7 @@ medicalcost = "medicalcost.__main__:main"
 package_name = "medicalcost"
 project_name = "MedicalCost"
 kedro_init_version = "1.0.0"
-tools = "['Data Structure', 'PySpark']"
+tools = "['Data Structure']"
 example_pipeline = "False"
 source_dir = "src"
 
