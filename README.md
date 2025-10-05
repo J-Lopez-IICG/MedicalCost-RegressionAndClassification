@@ -57,6 +57,20 @@ Los pipelines de modelado y `reporting` se encargan de consolidar y visualizar e
 
 El modelo de Regresión Lineal Múltiple entrenado en el pipeline `model_regression` obtuvo una precisión (R-cuadrado) de aproximadamente **0.7836**.
 
+**Detalles del Modelo de Regresión Lineal:**
+
+R-cuadrado del modelo de regresión: 0.7836
+Coeficientes del modelo de regresión:
+Intercept: -12050.84
+age: 257.33
+bmi: 337.31
+children: 474.59
+sex_male: -131.31
+smoker_yes: 23600.54
+region_northwest: -352.97
+region_southeast: -1033.67
+region_southwest: -959.69
+
 **Impacto de cada variable en el costo (Regresión Lineal):**
 *   **`smoker_yes`**: Es, por un margen enorme, el factor más determinante, aumentando el costo en más de $23,600.
 *   **`age`** y **`bmi`**: Son los siguientes factores más importantes, aumentando el costo en ~$257 y ~$337 por cada unidad, respectivamente.
@@ -73,6 +87,24 @@ Tras el ajuste de hiperparámetros, el modelo **Random Forest** demostró ser el
 | Support Vector Classifier (SVC) | 92.54% |
 | XGBoost | 92.91% |
 | **Random Forest** | **94.03%** |
+
+**Resultados Detallados de los Modelos de Clasificación:**
+
+Resultados de los modelos de clasificación:
+Regresión Logística - Accuracy: 0.9000
+Support Vector Classifier (SVC) - Accuracy: 0.9254
+XGBoost - Accuracy: 0.9291
+Random Forest - Accuracy: 0.9403
+
+Reporte de Clasificación (Random Forest):
+              precision    recall  f1-score   support
+
+        Bajo       0.94      0.94      0.94       662
+        Alto       0.94      0.94      0.94       671
+
+    accuracy                           0.94      1333
+   macro avg       0.94      0.94      0.94      1333
+weighted avg       0.94      0.94      0.94      1333
 
 Este resultado sugiere que, para el problema de clasificación de costos médicos en este dataset, el Random Forest es el modelo más robusto y con mayor capacidad para distinguir entre pacientes de "alto" y "bajo" costo.
 
