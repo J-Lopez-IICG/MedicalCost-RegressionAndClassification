@@ -13,4 +13,4 @@ kagglehub
 kedro-datasets
 kedro-viz
 kaggle
-xboost
+xgboost
