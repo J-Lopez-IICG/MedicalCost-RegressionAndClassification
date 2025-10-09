@@ -170,7 +170,7 @@ Una vez completados estos pasos, el pipeline podrá autenticarse con Kaggle para
 
 ## Instalación y Ejecución
 
-Sigue estos pasos para configurar y ejecutar el proyecto en tu máquina local.
+Sigue estos pasos para configurar y ejecutar el proyecto en tu máquina local. Se requiere Python 3.11.9.
 
 ### 1. Clonar el Repositorio
 
