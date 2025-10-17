@@ -4,6 +4,7 @@ from .nodes import (
     plot_univariate_regressions,
     plot_interactions_and_correlations,
     plot_numerical_distributions,
+    plot_numerical_boxplots,
 )
 
 
@@ -40,6 +41,16 @@ def create_pipeline(**kwargs) -> Pipeline:
                     "plot_children_barplot",
                 ],
                 name="plot_numerical_distributions_node",
+            ),
+            node(
+                func=plot_numerical_boxplots,
+                inputs="raw_medical_data_csv",
+                outputs=[
+                    "plot_age_boxplot",
+                    "plot_bmi_boxplot",
+                    "plot_charges_boxplot",
+                ],
+                name="plot_numerical_boxplots_node",
             ),
         ]
     )

@@ -163,3 +163,27 @@ plot_children_barplot:
     transparent: false
     bbox_inches: tight
   versioned: false
+
+plot_age_boxplot:
+  type: kedro_datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/plot_age_boxplot.png
+  save_args:
+    transparent: false
+    bbox_inches: tight
+  versioned: false
+
+plot_bmi_boxplot:
+  type: kedro_datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/plot_bmi_boxplot.png
+  save_args:
+    transparent: false
+    bbox_inches: tight
+  versioned: false
+
+plot_charges_boxplot:
+  type: kedro_datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/plot_charges_boxplot.png
+  save_args:
+    transparent: false
+    bbox_inches: tight
+  versioned: false

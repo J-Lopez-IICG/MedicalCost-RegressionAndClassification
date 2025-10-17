@@ -209,3 +209,48 @@ def plot_numerical_distributions(
         fig_charges_hist,
         fig_children_bar,
     )
+
+
+def plot_numerical_boxplots(df_raw: pd.DataFrame) -> tuple[Figure, Figure, Figure]:
+    """Generates box plots for continuous numerical columns to identify outliers.
+
+    Args:
+        df_raw: The raw medical insurance data.
+
+    Returns:
+        A tuple containing:
+            - fig_age_boxplot (Figure): Box plot for age.
+            - fig_bmi_boxplot (Figure): Box plot for BMI.
+            - fig_charges_boxplot (Figure): Box plot for charges.
+    """
+    plt.style.use("seaborn-v0_8-whitegrid")
+
+    # Box plot for age
+    fig_age_boxplot, ax_age = plt.subplots(figsize=(8, 6))
+    sns.boxplot(y=df_raw["age"], ax=ax_age, color="#1f77b4")
+    ax_age.set_title("Box Plot de Edad", fontsize=14, weight="bold")
+    ax_age.set_ylabel("Edad")
+    fig_age_boxplot.tight_layout()
+    plt.close(fig_age_boxplot)
+
+    # Box plot for BMI
+    fig_bmi_boxplot, ax_bmi = plt.subplots(figsize=(8, 6))
+    sns.boxplot(y=df_raw["bmi"], ax=ax_bmi, color="#2ca02c")
+    ax_bmi.set_title(
+        "Box Plot del Índice de Masa Corporal (BMI)", fontsize=14, weight="bold"
+    )
+    ax_bmi.set_ylabel("BMI")
+    fig_bmi_boxplot.tight_layout()
+    plt.close(fig_bmi_boxplot)
+
+    # Box plot for charges
+    fig_charges_boxplot, ax_charges = plt.subplots(figsize=(8, 6))
+    sns.boxplot(y=df_raw["charges"], ax=ax_charges, color="#ff7f0e")
+    ax_charges.set_title(
+        "Box Plot de los Costos del Seguro (Charges)", fontsize=14, weight="bold"
+    )
+    ax_charges.set_ylabel("Charges")
+    fig_charges_boxplot.tight_layout()
+    plt.close(fig_charges_boxplot)
+
+    return fig_age_boxplot, fig_bmi_boxplot, fig_charges_boxplot
