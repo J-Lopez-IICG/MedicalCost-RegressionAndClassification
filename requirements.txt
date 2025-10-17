@@ -14,3 +14,4 @@ kedro-datasets
 kedro-viz
 kaggle
 xgboost
+pandera

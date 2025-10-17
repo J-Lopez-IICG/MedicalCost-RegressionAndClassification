@@ -1,5 +1,7 @@
 import pandas as pd
 import logging
+import pandera as pa
+from pandera.errors import SchemaErrors
 
 log = logging.getLogger(__name__)
 
@@ -27,31 +29,40 @@ def clean_and_validate_data(raw_data: pd.DataFrame) -> pd.DataFrame:
             f"Se eliminaron {raw_data.shape[0] - cleaned_data.shape[0]} filas con valores nulos."
         )
 
-    # Definir los tipos de datos esperados
-    expected_types = {
-        "age": "int64",
-        "sex": "category",
-        "bmi": "float64",
-        "children": "int64",
-        "smoker": "category",
-        "region": "category",
-        "charges": "float64",
-    }
+    # Manejo de outliers identificados en el EDA (capping)
+    # Se definen umbrales razonables para acotar los valores extremos.
+    bmi_cap = 55
+    charges_cap = 52000
+    cleaned_data["bmi"] = cleaned_data["bmi"].clip(upper=bmi_cap)
+    cleaned_data["charges"] = cleaned_data["charges"].clip(upper=charges_cap)
+    log.info(
+        f"Outliers acotados: 'bmi' limitado a {bmi_cap} y 'charges' a {charges_cap}."
+    )
 
-    # Filtrar el diccionario para solo incluir columnas que existen en el DataFrame
-    # y advertir sobre las que no se encuentren.
-    actual_types_to_convert = {}
-    for col, dtype in expected_types.items():
-        if col in cleaned_data.columns:
-            actual_types_to_convert[col] = dtype
-        else:
-            log.warning(
-                f"Columna '{col}' para conversión de tipo no encontrada en el dataset."
-            )
+    # Definir el esquema de validación con Pandera
+    schema = pa.DataFrameSchema(
+        {
+            "age": pa.Column(int, pa.Check.between(min_value=18, max_value=100)),
+            "sex": pa.Column(str, pa.Check.isin(["male", "female"])),
+            "bmi": pa.Column(float, pa.Check.between(min_value=10, max_value=bmi_cap)),
+            "children": pa.Column(int, pa.Check.ge(0)),
+            "smoker": pa.Column(str, pa.Check.isin(["yes", "no"])),
+            "region": pa.Column(str),
+            "charges": pa.Column(float, nullable=False),
+        }
+    )
 
-    # Convertir todos los tipos de datos de una sola vez
-    log.info("Convirtiendo tipos de datos de las columnas...")
-    cleaned_data = cleaned_data.astype(actual_types_to_convert)
-    log.info("Tipos de datos validados correctamente.")
+    try:
+        log.info("Validando datos con el esquema de Pandera...")
+        cleaned_data = schema.validate(cleaned_data, lazy=True)
+        log.info("Validación de datos con Pandera exitosa.")
+    except SchemaErrors as err:
+        log.error("Falló la validación de datos con Pandera. Revisar los errores.")
+        log.error(err.failure_cases)  # Muestra los datos que fallaron
+        raise  # Vuelve a lanzar la excepción para detener el pipeline
 
+    # Convertir a tipos 'category' después de la validación para optimizar memoria
+    cleaned_data = cleaned_data.astype(
+        {"sex": "category", "smoker": "category", "region": "category"}
+    )
     return cleaned_data
