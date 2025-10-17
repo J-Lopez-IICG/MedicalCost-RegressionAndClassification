@@ -111,6 +111,7 @@ def plot_univariate_regressions(
     X_age = df_raw[["age"]]
     y_age = df_raw["charges"]
     model_age = LinearRegression()
+    plt.style.use("seaborn-v0_8-whitegrid")
     model_age.fit(X_age, y_age)
 
     fig_age_vs_charges, ax_age = plt.subplots(figsize=(10, 6))
@@ -122,10 +123,16 @@ def plot_univariate_regressions(
         scatter_kws={"alpha": 0.5},
         ax=ax_age,
     )
-    ax_age.set_title("Regresión Lineal: Costos del Seguro vs. Edad")
+    r2_age = r2_score(y_age, model_age.predict(X_age))
+    ax_age.set_title(
+        f"Regresión Lineal: Costos vs. Edad (R² = {r2_age:.2f})",
+        fontsize=14,
+        weight="bold",
+    )
     ax_age.set_xlabel("Edad")
     ax_age.set_ylabel("Costo del Seguro (Charges)")
-    ax_age.grid(True)
+    ax_age.grid(True, which="both", linestyle="--", linewidth=0.5)
+    fig_age_vs_charges.tight_layout()
 
     # Plot BMI vs. charges
     X_bmi = df_raw[["bmi"]]
@@ -142,18 +149,26 @@ def plot_univariate_regressions(
         scatter_kws={"alpha": 0.5},
         ax=ax_bmi,
     )
-    ax_bmi.set_title("Regresión Lineal: Costos del Seguro vs. IMC (BMI)")
+    r2_bmi = r2_score(y_bmi, model_bmi.predict(X_bmi))
+    ax_bmi.set_title(
+        f"Regresión Lineal: Costos vs. IMC (R² = {r2_bmi:.2f})",
+        fontsize=14,
+        weight="bold",
+    )
     ax_bmi.set_xlabel("Índice de Masa Corporal (BMI)")
     ax_bmi.set_ylabel("Costo del Seguro (Charges)")
-    ax_bmi.grid(True)
+    ax_bmi.grid(True, which="both", linestyle="--", linewidth=0.5)
+    fig_bmi_vs_charges.tight_layout()
 
     # Plot smoker vs. charges
     fig_smoker_vs_charges, ax_smoker = plt.subplots(figsize=(8, 6))
     sns.boxplot(x="smoker", y="charges", data=df_raw, ax=ax_smoker)
-    ax_smoker.set_title("Distribución de Costos para Fumadores vs. No Fumadores")
+    ax_smoker.set_title(
+        "Distribución de Costos: Fumadores vs. No Fumadores", fontsize=14, weight="bold"
+    )
     ax_smoker.set_xlabel("¿Es Fumador?")
     ax_smoker.set_ylabel("Costo del Seguro (Charges)")
-    ax_smoker.grid(True, axis="y", linestyle="--", alpha=0.7)
+    fig_smoker_vs_charges.tight_layout()
 
     univariate_output = f"Ecuación (Edad): charges = {model_age.coef_[0]:.2f} * age + {model_age.intercept_:.2f}\n\n"
     univariate_output += f"Ecuación (IMC): charges = {model_bmi.coef_[0]:.2f} * bmi + {model_bmi.intercept_:.2f}\n\n"
