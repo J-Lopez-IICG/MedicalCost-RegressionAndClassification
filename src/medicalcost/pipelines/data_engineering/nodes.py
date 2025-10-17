@@ -7,14 +7,17 @@ from pathlib import Path
 log = logging.getLogger(__name__)
 
 
-def download_and_load_raw_data() -> pd.DataFrame:
+def download_and_load_raw_data(parameters: dict) -> pd.DataFrame:
     """
     Descarga el dataset desde Kaggle usando la API oficial, lo descomprime,
     lee el archivo CSV y lo devuelve como un DataFrame de pandas,
     limpiando los archivos temporales.
+
+    Args:
+        parameters: Diccionario con los parámetros del pipeline.
     """
-    dataset_handle = "mirichoi0218/insurance"
-    temp_download_path = Path("data/temp_kaggle")
+    dataset_handle = parameters["dataset_handle"]
+    temp_download_path = Path(parameters["temp_download_path"])
 
     try:
         # 1. Crear carpeta temporal y autenticar

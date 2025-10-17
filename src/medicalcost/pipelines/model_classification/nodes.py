@@ -214,9 +214,7 @@ def train_and_evaluate_xgboost(
     }
 
     grid_search_xgb = GridSearchCV(
-        estimator=XGBClassifier(
-            random_state=42, use_label_encoder=False, eval_metric="logloss"
-        ),
+        estimator=XGBClassifier(random_state=42, eval_metric="logloss"),
         param_grid=param_grid_xgb,
         cv=5,
         n_jobs=-1,

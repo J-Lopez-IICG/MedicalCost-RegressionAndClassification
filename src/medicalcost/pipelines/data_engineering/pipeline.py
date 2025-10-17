@@ -7,9 +7,9 @@ def create_pipeline(**kwargs) -> Pipeline:
         [
             node(
                 func=download_and_load_raw_data,
-                inputs=None,
+                inputs="params:data_engineering",
                 outputs="raw_medical_data_csv",
-                name="download_and_save_raw_data_node",
+                name="download_and_load_raw_data_node",
             )
         ]
     )
