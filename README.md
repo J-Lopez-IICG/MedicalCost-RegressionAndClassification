@@ -4,7 +4,7 @@
 
 ## 🎯 Visión General
 
-Este proyecto Kedro implementa un pipeline de ciencia de datos de extremo a extremo para predecir los costos de seguros médicos y clasificar a los pacientes en categorías de costo. La solución utiliza el conjunto de datos "Medical Insurance Cost Dataset", disponible en [Kaggle](https://www.kaggle.com/datasets/mosapabdelghany/medical-insurance-cost-dataset), que contiene información demográfica y de salud de individuos. El pipeline ingiere estos datos crudos, los procesa para garantizar su calidad, entrena y evalúa modelos de regresión para predecir costos exactos, y modelos de clasificación para predecir si un paciente incurrirá en costos "Altos" o "Bajos".
+Este proyecto Kedro implementa un pipeline de ciencia de datos de extremo a extremo para predecir los costos de seguros médicos y clasificar a los pacientes en categorías de costo. La solución utiliza el conjunto de datos "Medical Insurance Cost Dataset", disponible en [Kaggle: Medical Insurance Cost Dataset](https://www.kaggle.com/datasets/mosapabdelghany/medical-insurance-cost-dataset), que contiene información demográfica y de salud de individuos. El pipeline ingiere estos datos crudos, los procesa para garantizar su calidad, entrena y evalúa modelos de regresión para predecir costos exactos, y modelos de clasificación para predecir si un paciente incurrirá en costos "Altos" o "Bajos".
 
 El objetivo es demostrar un flujo de trabajo de Machine Learning estructurado y reproducible, donde cada paso, desde la limpieza de datos hasta la generación de reportes, está encapsulado en un pipeline modular y robusto.
 
@@ -16,7 +16,7 @@ La hipótesis central de este análisis es que **factores demográficos y de sal
 
 ---
 ## Estructura del Proyecto
-<div align="center">
+<div>
 
 ```
 src/medicalcost/pipelines/
@@ -82,24 +82,33 @@ Los pipelines generan diversas visualizaciones para entender el comportamiento d
 **Gráficos de Regresión Univariada y Correlación:**
 *   **Regresión Lineal: Costos del Seguro vs. Edad**: Muestra una tendencia positiva, con datos agrupados en "bandas" (explicadas por el hábito de fumar).
     ![Regresión Lineal: Costos del Seguro vs. Edad](data/08_reporting/age_vs_charges.png)
+    > A mayor edad, mayor es el costo del seguro. Sin embargo, el bajo R² (0.09) y las "bandas" visuales sugieren que la edad por sí sola no es un buen predictor y que otro factor (el hábito de fumar) está influyendo fuertemente.
 *   **Regresión Lineal: Costos del Seguro vs. IMC (BMI)**: Relación positiva más débil y dispersa.
     ![Regresión Lineal: Costos del Seguro vs. IMC (BMI)](data/08_reporting/bmi_vs_charges.png)
+    > Existe una leve tendencia a que un mayor IMC se relacione con mayores costos, pero la relación es muy débil (R² de 0.04) y los datos están muy dispersos, indicando que el IMC por sí solo tiene un poder predictivo limitado.
 *   **Distribución de Costos para Fumadores vs. No Fumadores**: Revela una diferencia masiva en costos, siendo el hábito de fumar un factor clave.
     ![Distribución de Costos para Fumadores vs. No Fumadores](data/08_reporting/smoker_vs_charges.png)
+    > Este es el hallazgo más contundente. Ser fumador dispara los costos del seguro de manera drástica. La mediana de costos para fumadores es significativamente más alta que incluso los costos más extremos de los no fumadores.
 *   **Interacción entre IMC, ser Fumador y Costos del Seguro**: Muestra cómo el IMC impacta drásticamente los costos para fumadores, un claro efecto de interacción.
     ![Interacción entre IMC, ser Fumador y Costos del Seguro](data/08_reporting/bmi_smoker_interaction.png)
+    > El impacto del IMC en los costos depende críticamente de si la persona fuma. Para los no fumadores, el costo apenas aumenta con el IMC. Para los fumadores, un IMC más alto se correlaciona con un aumento exponencial en los costos, demostrando una fuerte interacción entre ambos factores.
 *   **Matriz de Correlación de Variables Numéricas**: Confirma las correlaciones entre `age`, `bmi` y `charges`.
     ![Matriz de Correlación de Variables Numéricas](data/08_reporting/correlation_heatmap.png)
+    > La correlación más fuerte con los costos (`charges`) es la edad (`age`), aunque sigue siendo moderada (0.30). El IMC (`bmi`) tiene una correlación más débil (0.20). Esto refuerza que los modelos lineales simples con estas variables no serán suficientes.
 
 **Gráficos de Clasificación y Ajuste de Hiperparámetros:**
 *   **Importancia de las Características en el Modelo de Regresión Logística**: Muestra el impacto de cada variable en la clasificación.
     ![Importancia de las Características en el Modelo de Regresión Logística](data/08_reporting/log_reg_feature_importance.png)
+    > Ser fumador (`smoker_yes`) es, con diferencia, el factor que más aumenta la probabilidad de pertenecer a la categoría de "Alto" costo. La edad y el IMC también contribuyen positivamente, mientras que ser hombre o pertenecer a ciertas regiones tiene un impacto negativo o menor.
 *   **Heatmap de Resultados de GridSearchCV para Random Forest**: Visualiza el impacto de los hiperparámetros en la precisión del modelo Random Forest.
     ![Heatmap de Resultados de GridSearchCV para Random Forest (Accuracy Promedio)](data/08_reporting/rf_grid_search_heatmap.png)
+    > Este gráfico muestra cómo la combinación de hiperparámetros afecta la precisión del modelo. Permite identificar visualmente la configuración óptima (en este caso, la zona más clara) que maximiza el rendimiento, justificando la selección del mejor modelo.
 *   **Heatmap de Resultados de GridSearchCV para XGBoost**: Visualiza el impacto de los hiperparámetros en la precisión del modelo XGBoost.
     ![Heatmap de Resultados de GridSearchCV para XGBoost (Accuracy Promedio)](data/08_reporting/xgb_grid_search_heatmap.png)
+    > Al igual que con Random Forest, este mapa de calor guía la optimización de XGBoost. Se puede observar cómo varían las precisiones al ajustar la tasa de aprendizaje y el número de estimadores, asegurando que se elija la combinación más potente.
 *   **Heatmap de Resultados de GridSearchCV para SVC**: Visualiza el impacto de los hiperparámetros en la precisión del modelo SVC.
     ![Heatmap de Resultados de GridSearchCV para SVC (Accuracy Promedio)](data/08_reporting/svc_grid_search_heatmap.png)
+    > El rendimiento del modelo SVC es muy sensible a los parámetros `C` (regularización) y `gamma`. El mapa de calor revela qué combinaciones evitan el sobreajuste o el subajuste, llevando a la mejor precisión posible para este clasificador.
 
 ---
 
