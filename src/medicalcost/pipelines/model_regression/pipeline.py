@@ -1,12 +1,6 @@
 from kedro.pipeline import Pipeline, node, pipeline
 
-from .nodes import (
-    preprocess_data,
-    train_model,
-    evaluate_model,
-    plot_univariate_regressions,
-    plot_interactions_and_correlations,
-)
+from .nodes import preprocess_data, train_model, evaluate_model
 
 
 def create_pipeline(**kwargs) -> Pipeline:
@@ -33,23 +27,6 @@ def create_pipeline(**kwargs) -> Pipeline:
                     "model_evaluation_output",
                 ],
                 name="evaluate_model_node",
-            ),
-            node(
-                func=plot_univariate_regressions,
-                inputs="raw_medical_data_csv",
-                outputs=[
-                    "plot_age_vs_charges",
-                    "plot_bmi_vs_charges",
-                    "plot_smoker_vs_charges",
-                    "univariate_regression_output",
-                ],
-                name="plot_univariate_regressions_node",
-            ),
-            node(
-                func=plot_interactions_and_correlations,
-                inputs="raw_medical_data_csv",
-                outputs=["plot_bmi_smoker_interaction", "plot_correlation_heatmap"],
-                name="plot_interactions_and_correlations_node",
             ),
         ]
     )

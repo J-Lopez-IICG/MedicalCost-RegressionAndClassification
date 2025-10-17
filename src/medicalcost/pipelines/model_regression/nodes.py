@@ -7,20 +7,43 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 import json
+import logging
+
+log = logging.getLogger(__name__)
 
 
 def preprocess_data(df_raw: pd.DataFrame) -> pd.DataFrame:
-    """Preprocesses the raw data by creating dummy variables for categorical features.
+    """Cleans, validates, and preprocesses the raw data by creating dummy variables.
 
     Args:
         df_raw: The raw medical insurance data.
 
     Returns:
-        The preprocessed DataFrame with dummy variables.
+        The preprocessed DataFrame ready for model training.
     """
-    df_model = df_raw.copy()
+    # 1. Limpieza y validación (similar a data_processing)
+    log.info(f"Tamaño original del dataset: {df_raw.shape[0]} filas.")
+    cleaned_data = df_raw.dropna().copy()
+    log.info(
+        f"Tamaño del dataset después de eliminar nulos: {cleaned_data.shape[0]} filas."
+    )
+
+    expected_types = {
+        "sex": "category",
+        "smoker": "category",
+        "region": "category",
+    }
+    actual_types_to_convert = {
+        col: dtype
+        for col, dtype in expected_types.items()
+        if col in cleaned_data.columns
+    }
+    cleaned_data = cleaned_data.astype(actual_types_to_convert)
+    log.info("Tipos de datos categóricos validados.")
+
+    # 2. Creación de variables dummy
     df_model = pd.get_dummies(
-        df_model, columns=["sex", "smoker", "region"], drop_first=True
+        cleaned_data, columns=["sex", "smoker", "region"], drop_first=True
     )
     return df_model
 
@@ -90,127 +113,3 @@ def evaluate_model(
     evaluation_output += coeffs.to_string()
 
     return r2, coeffs, evaluation_output
-
-
-def plot_univariate_regressions(
-    df_raw: pd.DataFrame,
-) -> tuple[Figure, Figure, Figure, str]:
-    """Generates univariate regression plots and a text summary.
-
-    Args:
-        df_raw: The raw medical insurance data.
-
-    Returns:
-        A tuple containing:
-            - fig_age_vs_charges (Figure): Plot of age vs. charges.
-            - fig_bmi_vs_charges (Figure): Plot of BMI vs. charges.
-            - fig_smoker_vs_charges (Figure): Plot of smoker vs. charges.
-            - univariate_output (str): A formatted string with univariate regression interpretations.
-    """
-    # Plot age vs. charges
-    X_age = df_raw[["age"]]
-    y_age = df_raw["charges"]
-    model_age = LinearRegression()
-    plt.style.use("seaborn-v0_8-whitegrid")
-    model_age.fit(X_age, y_age)
-
-    fig_age_vs_charges, ax_age = plt.subplots(figsize=(10, 6))
-    sns.regplot(
-        x="age",
-        y="charges",
-        data=df_raw,
-        line_kws={"color": "red"},
-        scatter_kws={"alpha": 0.5},
-        ax=ax_age,
-    )
-    r2_age = r2_score(y_age, model_age.predict(X_age))
-    ax_age.set_title(
-        f"Regresión Lineal: Costos vs. Edad (R² = {r2_age:.2f})",
-        fontsize=14,
-        weight="bold",
-    )
-    ax_age.set_xlabel("Edad")
-    ax_age.set_ylabel("Costo del Seguro (Charges)")
-    ax_age.grid(True, which="both", linestyle="--", linewidth=0.5)
-    fig_age_vs_charges.tight_layout()
-
-    # Plot BMI vs. charges
-    X_bmi = df_raw[["bmi"]]
-    y_bmi = df_raw["charges"]
-    model_bmi = LinearRegression()
-    model_bmi.fit(X_bmi, y_bmi)
-
-    fig_bmi_vs_charges, ax_bmi = plt.subplots(figsize=(10, 6))
-    sns.regplot(
-        x="bmi",
-        y="charges",
-        data=df_raw,
-        line_kws={"color": "green"},
-        scatter_kws={"alpha": 0.5},
-        ax=ax_bmi,
-    )
-    r2_bmi = r2_score(y_bmi, model_bmi.predict(X_bmi))
-    ax_bmi.set_title(
-        f"Regresión Lineal: Costos vs. IMC (R² = {r2_bmi:.2f})",
-        fontsize=14,
-        weight="bold",
-    )
-    ax_bmi.set_xlabel("Índice de Masa Corporal (BMI)")
-    ax_bmi.set_ylabel("Costo del Seguro (Charges)")
-    ax_bmi.grid(True, which="both", linestyle="--", linewidth=0.5)
-    fig_bmi_vs_charges.tight_layout()
-
-    # Plot smoker vs. charges
-    fig_smoker_vs_charges, ax_smoker = plt.subplots(figsize=(8, 6))
-    sns.boxplot(x="smoker", y="charges", data=df_raw, ax=ax_smoker)
-    ax_smoker.set_title(
-        "Distribución de Costos: Fumadores vs. No Fumadores", fontsize=14, weight="bold"
-    )
-    ax_smoker.set_xlabel("¿Es Fumador?")
-    ax_smoker.set_ylabel("Costo del Seguro (Charges)")
-    fig_smoker_vs_charges.tight_layout()
-
-    univariate_output = f"Ecuación (Edad): charges = {model_age.coef_[0]:.2f} * age + {model_age.intercept_:.2f}\n\n"
-    univariate_output += f"Ecuación (IMC): charges = {model_bmi.coef_[0]:.2f} * bmi + {model_bmi.intercept_:.2f}\n\n"
-    univariate_output += "Interpretación (Edad): Se observa una clara tendencia positiva: a mayor edad, mayor es el costo. Sin embargo, los datos parecen agruparse en tres 'bandas' distintas. Esto sugiere que hay otro factor muy importante que no estamos considerando.\n\n"
-    univariate_output += "Interpretación (IMC): La relación positiva también existe, pero es más débil y los datos están mucho más dispersos. Al igual que con la edad, parece haber una división en los datos que este modelo simple no puede explicar.\n\n"
-    univariate_output += "Interpretación (Fumador): ¡Este es el hallazgo clave! La diferencia en costos entre fumadores y no fumadores es masiva. Ser fumador no solo eleva el costo promedio, sino que también aumenta la variabilidad. Esto explica las 'bandas' que vimos en los gráficos anteriores."
-
-    return (
-        fig_age_vs_charges,
-        fig_bmi_vs_charges,
-        fig_smoker_vs_charges,
-        univariate_output,
-    )
-
-
-def plot_interactions_and_correlations(df_raw: pd.DataFrame) -> tuple[Figure, Figure]:
-    """Generates interaction and correlation plots.
-
-    Args:
-        df_raw: The raw medical insurance data.
-
-    Returns:
-        A tuple containing:
-            - fig_bmi_smoker_interaction (Figure): Plot of BMI, smoker interaction.
-            - fig_correlation_heatmap (Figure): Plot of correlation heatmap.
-    """
-    # Plot BMI, smoker interaction
-    fig_bmi_smoker_interaction, ax_interaction = plt.subplots(figsize=(12, 8))
-    sns.scatterplot(
-        x="bmi", y="charges", hue="smoker", data=df_raw, alpha=0.7, ax=ax_interaction
-    )
-    ax_interaction.set_title("Interacción entre IMC, ser Fumador y Costos del Seguro")
-    ax_interaction.set_xlabel("Índice de Masa Corporal (BMI)")
-    ax_interaction.set_ylabel("Costo del Seguro (Charges)")
-    ax_interaction.grid(True)
-
-    # Plot correlation heatmap
-    numeric_cols = df_raw.select_dtypes(include=np.number)
-    fig_correlation_heatmap, ax_heatmap = plt.subplots(figsize=(10, 8))
-    sns.heatmap(
-        numeric_cols.corr(), annot=True, cmap="coolwarm", fmt=".2f", ax=ax_heatmap
-    )
-    ax_heatmap.set_title("Matriz de Correlación de Variables Numéricas")
-
-    return fig_bmi_smoker_interaction, fig_correlation_heatmap

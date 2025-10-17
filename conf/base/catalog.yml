@@ -131,3 +131,35 @@ plot_svc_grid_search_heatmap:
 classification_summary_output:
   type: kedro_datasets.text.TextDataset
   filepath: data/08_reporting/classification_summary.txt
+
+plot_age_histogram:
+  type: kedro_datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/plot_age_histogram.png
+  save_args:
+    transparent: false
+    bbox_inches: tight
+  versioned: false
+
+plot_bmi_histogram:
+  type: kedro_datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/plot_bmi_histogram.png
+  save_args:
+    transparent: false
+    bbox_inches: tight
+  versioned: false
+
+plot_charges_histogram:
+  type: kedro_datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/plot_charges_histogram.png
+  save_args:
+    transparent: false
+    bbox_inches: tight
+  versioned: false
+
+plot_children_barplot:
+  type: kedro_datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/plot_children_barplot.png
+  save_args:
+    transparent: false
+    bbox_inches: tight
+  versioned: false
