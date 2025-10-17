@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 import seaborn as sns
+import matplotlib
+
+matplotlib.use("Agg")  # Use non-interactive backend
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from sklearn.linear_model import LinearRegression
@@ -80,8 +83,13 @@ def plot_univariate_regressions(
     # Plot smoker vs. charges
     fig_smoker_vs_charges, ax_smoker = plt.subplots(figsize=(8, 6))
     sns.boxplot(
-        x="smoker", y="charges", data=df_raw, ax=ax_smoker, palette="viridis"
-    )  # Added palette
+        x="smoker",
+        y="charges",
+        data=df_raw,
+        ax=ax_smoker,
+        palette="viridis",
+        hue="smoker",
+    )
     ax_smoker.set_title(
         "Distribución de Costos: Fumadores vs. No Fumadores", fontsize=14, weight="bold"
     )
@@ -194,7 +202,9 @@ def plot_numerical_distributions(
 
     # Bar plot for discrete numerical column (children)
     fig_children_bar, ax_children = plt.subplots(figsize=(8, 6))
-    sns.countplot(x="children", data=df_raw, ax=ax_children, palette="viridis")
+    sns.countplot(
+        x="children", data=df_raw, ax=ax_children, palette="viridis", hue="children"
+    )
     ax_children.set_title(
         "Distribución del Número de Hijos", fontsize=14, weight="bold"
     )

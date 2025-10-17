@@ -8,6 +8,7 @@ from medicalcost.pipelines import (
     data_engineering,
     data_processing,
     exploratory_data,
+    feature_engineering,
     model_regression,
 )
 from medicalcost.pipelines import model_classification
@@ -23,6 +24,7 @@ def register_pipelines() -> dict[str, Pipeline]:
     data_engineering_pipeline = data_engineering.create_pipeline()
     exploratory_data_pipeline = exploratory_data.create_pipeline()
     data_processing_pipeline = data_processing.create_pipeline()
+    feature_engineering_pipeline = feature_engineering.create_pipeline()
     model_regression_pipeline = model_regression.create_pipeline()
     model_classification_pipeline = model_classification.create_pipeline()
 
@@ -30,6 +32,7 @@ def register_pipelines() -> dict[str, Pipeline]:
         data_engineering_pipeline  # First, load raw data
         + exploratory_data_pipeline  # Then, explore the raw data
         + data_processing_pipeline
+        + feature_engineering_pipeline
         + model_regression_pipeline
         + model_classification_pipeline
     )

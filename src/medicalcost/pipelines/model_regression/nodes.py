@@ -12,42 +12,6 @@ import logging
 log = logging.getLogger(__name__)
 
 
-def preprocess_data(df_raw: pd.DataFrame) -> pd.DataFrame:
-    """Cleans, validates, and preprocesses the raw data by creating dummy variables.
-
-    Args:
-        df_raw: The raw medical insurance data.
-
-    Returns:
-        The preprocessed DataFrame ready for model training.
-    """
-    # 1. Limpieza y validación (similar a data_processing)
-    log.info(f"Tamaño original del dataset: {df_raw.shape[0]} filas.")
-    cleaned_data = df_raw.dropna().copy()
-    log.info(
-        f"Tamaño del dataset después de eliminar nulos: {cleaned_data.shape[0]} filas."
-    )
-
-    expected_types = {
-        "sex": "category",
-        "smoker": "category",
-        "region": "category",
-    }
-    actual_types_to_convert = {
-        col: dtype
-        for col, dtype in expected_types.items()
-        if col in cleaned_data.columns
-    }
-    cleaned_data = cleaned_data.astype(actual_types_to_convert)
-    log.info("Tipos de datos categóricos validados.")
-
-    # 2. Creación de variables dummy
-    df_model = pd.get_dummies(
-        cleaned_data, columns=["sex", "smoker", "region"], drop_first=True
-    )
-    return df_model
-
-
 def train_model(
     df_model: pd.DataFrame,
 ) -> tuple[LinearRegression, pd.DataFrame, pd.Series, pd.Series, pd.DataFrame]:

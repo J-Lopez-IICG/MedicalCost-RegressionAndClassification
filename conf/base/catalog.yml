@@ -6,10 +6,13 @@ processed_medical_data_excel:
   type: kedro_datasets.pandas.ExcelDataset
   filepath: data/02_intermediate/medical_insurance_cost_processed.xlsx
 
-# Processed data
-model_input_data:
+featured_medical_data:
   type: kedro_datasets.pandas.CSVDataset
-  filepath: data/05_model_input/medical_insurance_cost_model_input.csv
+  filepath: data/04_feature/medical_insurance_cost_featured.csv
+
+classification_input_data_with_target:
+  type: kedro_datasets.pandas.CSVDataset
+  filepath: data/05_model_input/medical_insurance_cost_classification_input.csv
 
 # Model outputs
 reg_model:
@@ -26,23 +29,23 @@ model_coefficients:
 
 # Reporting outputs (plots and text)
 plot_age_vs_charges:
-  type: kedro_datasets.matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/age_vs_charges.png
 
 plot_bmi_vs_charges:
-  type: kedro_datasets.matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/bmi_vs_charges.png
 
 plot_smoker_vs_charges:
-  type: kedro_datasets.matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/smoker_vs_charges.png
 
 plot_bmi_smoker_interaction:
-  type: kedro_datasets.matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/bmi_smoker_interaction.png
 
 plot_correlation_heatmap:
-  type: kedro_datasets.matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/correlation_heatmap.png
 
 univariate_regression_output:
@@ -52,11 +55,6 @@ univariate_regression_output:
 model_evaluation_output:
   type: kedro_datasets.text.TextDataset
   filepath: data/08_reporting/model_evaluation_output.txt
-
-# Classification Processed data
-classification_model_input_data:
-  type: kedro_datasets.pandas.CSVDataset
-  filepath: data/05_model_input/medical_insurance_cost_classification_model_input.csv
 
 # Classification Model outputs
 log_reg_model:
@@ -113,19 +111,19 @@ log_reg_feature_importance:
 
 # Classification Reporting outputs (plots and text)
 plot_log_reg_feature_importance:
-  type: kedro_datasets.matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/log_reg_feature_importance.png
 
 plot_rf_grid_search_heatmap:
-  type: kedro_datasets.matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/rf_grid_search_heatmap.png
 
 plot_xgb_grid_search_heatmap:
-  type: kedro_datasets.matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/xgb_grid_search_heatmap.png
 
 plot_svc_grid_search_heatmap:
-  type: kedro_datasets.matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/svc_grid_search_heatmap.png
 
 classification_summary_output:
@@ -133,7 +131,7 @@ classification_summary_output:
   filepath: data/08_reporting/classification_summary.txt
 
 plot_age_histogram:
-  type: kedro_datasets.matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/plot_age_histogram.png
   save_args:
     transparent: false
@@ -141,7 +139,7 @@ plot_age_histogram:
   versioned: false
 
 plot_bmi_histogram:
-  type: kedro_datasets.matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/plot_bmi_histogram.png
   save_args:
     transparent: false
@@ -149,7 +147,7 @@ plot_bmi_histogram:
   versioned: false
 
 plot_charges_histogram:
-  type: kedro_datasets.matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/plot_charges_histogram.png
   save_args:
     transparent: false
@@ -157,7 +155,7 @@ plot_charges_histogram:
   versioned: false
 
 plot_children_barplot:
-  type: kedro_datasets.matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/plot_children_barplot.png
   save_args:
     transparent: false
@@ -165,7 +163,7 @@ plot_children_barplot:
   versioned: false
 
 plot_age_boxplot:
-  type: kedro_datasets.matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/plot_age_boxplot.png
   save_args:
     transparent: false
@@ -173,7 +171,7 @@ plot_age_boxplot:
   versioned: false
 
 plot_bmi_boxplot:
-  type: kedro_datasets.matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/plot_bmi_boxplot.png
   save_args:
     transparent: false
@@ -181,7 +179,7 @@ plot_bmi_boxplot:
   versioned: false
 
 plot_charges_boxplot:
-  type: kedro_datasets.matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/plot_charges_boxplot.png
   save_args:
     transparent: false

@@ -16,13 +16,13 @@ def create_pipeline(**kwargs) -> Pipeline:
         [
             node(
                 func=preprocess_classification_data,
-                inputs="raw_medical_data_csv",
-                outputs="classification_model_input_data",
+                inputs="featured_medical_data",
+                outputs="classification_input_data_with_target",
                 name="preprocess_classification_data_node",
             ),
             node(
                 func=split_classification_data,
-                inputs="classification_model_input_data",
+                inputs="classification_input_data_with_target",
                 outputs=[
                     "cls_X_train",
                     "cls_X_test",

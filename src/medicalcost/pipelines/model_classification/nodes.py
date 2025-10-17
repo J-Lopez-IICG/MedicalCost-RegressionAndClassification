@@ -15,28 +15,24 @@ import json
 
 
 def preprocess_classification_data(df_raw: pd.DataFrame) -> pd.DataFrame:
-    """Preprocesses the raw data for classification by creating a target variable and dummy variables.
+    """Preprocesses the data for classification by creating a binary target variable.
 
     Args:
-        df_raw: The raw medical insurance data.
+        df_raw: The featured medical insurance data (with dummy variables).
 
     Returns:
-        The preprocessed DataFrame with a classification target and dummy variables.
+        The DataFrame with the 'cost_category' target and 'charges' dropped.
     """
     df_clasificacion = df_raw.copy()
     umbral_costo = df_clasificacion["charges"].median()
     df_clasificacion["cost_category"] = np.where(
         df_clasificacion["charges"] > umbral_costo, "Alto", "Bajo"
     )
-    df_clasificacion = df_clasificacion.drop("charges", axis=1)
-    df_model_cls = df_clasificacion.copy()
-    df_model_cls = pd.get_dummies(
-        df_model_cls, columns=["sex", "smoker", "region"], drop_first=True
-    )
-    df_model_cls["cost_category"] = df_model_cls["cost_category"].map(
+    df_clasificacion["cost_category"] = df_clasificacion["cost_category"].map(
         {"Bajo": 0, "Alto": 1}
     )
-    return df_model_cls
+    df_clasificacion = df_clasificacion.drop("charges", axis=1)
+    return df_clasificacion
 
 
 def split_classification_data(
