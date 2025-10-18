@@ -357,7 +357,6 @@ def create_classification_summary(
     Returns:
         A formatted string with the classification summary.
     """
-    # --- INICIO DE LA CORRECCIÓN ---
 
     # 1. Almacenar los resultados en un diccionario para facilitar la comparación
     results = {
