@@ -357,20 +357,41 @@ def create_classification_summary(
     Returns:
         A formatted string with the classification summary.
     """
-    summary = "## Paso 5: El Veredicto Final y la Coronación del Campeón\n\n"
-    summary += "Después de una rigurosa evaluación y optimización, los resultados finales hablaron por sí mismos.\n\n"
-    summary += "| Modelo | Accuracy (Precisión Final) |\n"
-    summary += "| :--- | :---: |\n"
-    summary += f"| Regresión Logística | {accuracy_log * 100:.2f}% |\n"
-    summary += f"| Support Vector Classifier (SVC) | {accuracy_best_svc * 100:.2f}% |\n"
-    summary += f"| XGBoost | {accuracy_best_xgb * 100:.2f}% |\n"
-    summary += f"| **Random Forest** | **{accuracy_best_rf * 100:.2f}%** |\n\n"
-    summary += "---\n\n"
-    summary += (
-        "> El modelo **Random Forest optimizado** es el campeón indiscutible de este análisis, logrando la mayor precisión con un **"
-        + f"{accuracy_best_rf * 100:.2f}%"
-        + "**.\n\n"
-    )
-    summary += "Este proyecto demuestra una lección clave en la ciencia de datos: el algoritmo más complejo no siempre es el mejor. La experimentación y la validación rigurosa son esenciales para descubrir la solución óptima para un problema específico.\n\n"
-    summary += "Hemos concluido con una herramienta de clasificación de alto rendimiento, capaz de identificar con gran fiabilidad a los pacientes que probablemente incurrirán en altos costos, permitiendo así intervenciones más efectivas y proactivas."
-    return summary
+    # --- INICIO DE LA CORRECCIÓN ---
+
+    # 1. Almacenar los resultados en un diccionario para facilitar la comparación
+    results = {
+        "Regresión Logística": accuracy_log,
+        "Support Vector Classifier (SVC)": accuracy_best_svc,
+        "XGBoost": accuracy_best_xgb,
+        "Random Forest": accuracy_best_rf,
+    }
+
+    # 2. Encontrar el modelo con la mayor precisión
+    best_model_name = max(results, key=lambda k: results[k])
+    best_model_accuracy = results[best_model_name]
+
+    # 3. Construir la tabla de resultados dinámicamente
+    table_header = "| Modelo | Accuracy (Precisión Final) |\n| :--- | :---: |\n"
+    table_rows = ""
+    for name, acc in results.items():
+        table_rows += f"| {name} | {acc * 100:.2f}% |\n"
+
+    # 4. Construir el texto del veredicto con el ganador real
+    champion_line = f"> El modelo **{best_model_name} optimizado** es el campeón indiscutible de este análisis, logrando la mayor precisión con un **{best_model_accuracy * 100:.2f}%**."
+
+    # 5. Ensamblar el reporte completo
+    summary = f"""## Paso 5: El Veredicto Final y la Coronación del Campeón
+
+Después de una rigurosa evaluación y optimización, los resultados finales hablaron por sí mismos.
+
+{table_header}{table_rows}
+---
+
+{champion_line}
+
+Este proyecto demuestra una lección clave en la ciencia de datos: la experimentación y la validación rigurosa son esenciales para descubrir la solución óptima para un problema específico.
+
+Hemos concluido con una herramienta de clasificación de alto rendimiento, capaz de identificar con gran fiabilidad a los pacientes que probablemente incurrirán en altos costos, permitiendo así intervenciones más efectivas y proactivas."""
+
+    return summary.strip()
