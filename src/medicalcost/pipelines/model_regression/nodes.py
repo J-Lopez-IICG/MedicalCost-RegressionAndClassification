@@ -11,21 +11,21 @@ def train_model(
     primary_medical_data: pd.DataFrame,
     parameters: dict,
 ) -> tuple[LinearRegression, pd.DataFrame, pd.Series, pd.Series, pd.DataFrame]:
-    """Trains a linear regression model and splits data into training and testing sets.
+    """Divide los datos y entrena un modelo de regresión lineal.
 
     Args:
-        primary_medical_data: The preprocessed DataFrame from the feature engineering pipeline.
-        parameters: Parameters dictionary containing test_size and random_state.
+        primary_medical_data: El DataFrame preprocesado del pipeline de `feature_engineering`.
+        parameters: Diccionario de parámetros con `test_size` y `random_state`.
 
     Returns:
         A tuple containing:
-            - The trained LinearRegression model.
-            - reg_X_test (DataFrame): Testing features.
-            - reg_y_test (Series): Actual testing targets.
-            - y_pred (Series): Predicted testing targets.
-            - X (DataFrame): All features used for training.
+        - El modelo de regresión lineal entrenado.
+        - reg_X_test (DataFrame): Características del conjunto de prueba.
+        - reg_y_test (Series): Variable objetivo real del conjunto de prueba.
+        - y_pred (Series): Predicciones sobre el conjunto de prueba.
+        - X (DataFrame): Todas las características, para referencia de columnas.
     """
-    # 'cost_category' is for classification, so it must be dropped for the regression task.
+    # Se elimina 'cost_category' porque es para clasificación, no para regresión.
     X = primary_medical_data.drop(["charges", "cost_category"], axis=1)
     y = primary_medical_data["charges"]
     X_train, reg_X_test, y_train, reg_y_test = train_test_split(
@@ -55,20 +55,20 @@ def evaluate_model(
     y_pred: pd.Series,
     X: pd.DataFrame,
 ) -> tuple[float, pd.DataFrame, str]:
-    """Evaluates the model and generates R-squared score, coefficients, and a text summary.
+    """Evalúa el modelo y genera métricas de rendimiento.
 
     Args:
-        multi_model: The trained LinearRegression model.
-        reg_X_test: Testing features.
-        reg_y_test: Actual testing targets.
-        y_pred: Predicted testing targets.
-        X: All features used for training.
+        multi_model: El modelo de regresión lineal entrenado.
+        reg_X_test: Características del conjunto de prueba.
+        reg_y_test: Variable objetivo real del conjunto de prueba.
+        y_pred: Predicciones del modelo.
+        X: Todas las características, para referencia de columnas.
 
     Returns:
         A tuple containing:
-            - r2 (float): The R-squared score.
-            - coeffs (DataFrame): DataFrame of model coefficients.
-            - evaluation_output (str): A formatted string with model evaluation results.
+        - r2 (float): La puntuación R-cuadrado del modelo.
+        - coeffs (DataFrame): DataFrame con los coeficientes del modelo.
+        - evaluation_output (str): Un texto formateado con el resumen de la evaluación.
     """
     r2 = r2_score(reg_y_test, y_pred)
     coeffs = pd.DataFrame(multi_model.coef_, X.columns, columns=["Coeficiente"])
