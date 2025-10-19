@@ -40,6 +40,7 @@ def create_univariate_regression_plots(
         line_kws={"color": "#1f77b4"},
         scatter_kws={"alpha": 0.5},
         ax=ax_age,
+        seed=42,  # Añadido para reproducibilidad
     )
     r2_age = r2_score(y_age, model_age.predict(X_age))
     ax_age.set_title(
@@ -67,6 +68,7 @@ def create_univariate_regression_plots(
         line_kws={"color": "#2ca02c"},
         scatter_kws={"alpha": 0.5},
         ax=ax_bmi,
+        seed=42,  # Añadido para reproducibilidad
     )
     r2_bmi = r2_score(y_bmi, model_bmi.predict(X_bmi))
     ax_bmi.set_title(
