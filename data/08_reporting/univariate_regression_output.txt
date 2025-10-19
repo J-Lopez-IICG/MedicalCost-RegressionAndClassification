@@ -1,6 +1,6 @@
-Ecuación (Edad): charges = 257.72 * age + 3165.89
+Ecuación (Edad): charges = 257.23 * age + 3190.02
 
-Ecuación (IMC): charges = 393.87 * bmi + 1192.94
+Ecuación (IMC): charges = 393.86 * bmi + 1202.14
 
 Interpretación (Edad): Se observa una clara tendencia positiva: a mayor edad, mayor es el costo. Sin embargo, los datos parecen agruparse en tres 'bandas' distintas. Esto sugiere que hay otro factor muy importante que no estamos considerando.
 
