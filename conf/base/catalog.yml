@@ -142,6 +142,10 @@ plot_bmi_vs_charges:
   type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/regression/bmi_vs_charges.png
 
+plot_children_vs_charges:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/regression/children_vs_charges.png
+
 univariate_regression_output:
   type: text.TextDataset
   filepath: data/08_reporting/regression/univariate_regression_output.txt

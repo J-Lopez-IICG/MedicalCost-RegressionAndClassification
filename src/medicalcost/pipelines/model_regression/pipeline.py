@@ -19,10 +19,11 @@ def create_pipeline(**kwargs) -> Pipeline:
             node(
                 # Genera gráficos de regresión simple para 'age' y 'bmi' vs 'charges'.
                 func=create_univariate_regression_plots,
-                inputs="processed_medical_data",
+                inputs=["processed_medical_data", "params:model_regression"],
                 outputs=[
                     "plot_age_vs_charges",
                     "plot_bmi_vs_charges",
+                    "plot_children_vs_charges",
                     "univariate_regression_output",
                 ],
                 name="create_univariate_regression_plots_node",

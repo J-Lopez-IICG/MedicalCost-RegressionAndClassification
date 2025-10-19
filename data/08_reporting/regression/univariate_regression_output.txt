@@ -1,9 +1,5 @@
-Ecuación (Edad): charges = 257.23 * age + 3190.02
+--- Análisis de Regresión Univariada ---
 
-Ecuación (IMC): charges = 393.86 * bmi + 1202.14
-
-Interpretación (Edad): Se observa una clara tendencia positiva: a mayor edad, mayor es el costo. Sin embargo, los datos parecen agruparse en tres 'bandas' distintas. Esto sugiere que hay otro factor muy importante que no estamos considerando.
-
-Interpretación (IMC): La relación positiva también existe, pero es más débil y los datos están mucho más dispersos. Al igual que con la edad, parece haber una división en los datos que este modelo simple no puede explicar.
-
-Interpretación (Fumador): ¡Este es el hallazgo clave! La diferencia en costos entre fumadores y no fumadores es masiva. Ser fumador no solo eleva el costo promedio, sino que también aumenta la variabilidad. Esto explica las 'bandas' que vimos en los gráficos anteriores.
+Ecuación (Age): charges = 257.23 * age + 3190.02
+Ecuación (Bmi): charges = 393.86 * bmi + 1202.14
+Ecuación (Children): charges = 676.95 * children + 12537.36
