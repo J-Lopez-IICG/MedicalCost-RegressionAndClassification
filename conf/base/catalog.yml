@@ -125,6 +125,14 @@ plot_charges_boxplot:
   type: matplotlib.MatplotlibDataset
   filepath: data/08_reporting/exploratory/plot_charges_boxplot.png
 
+plot_bmi_smoker_interaction:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/bmi_smoker_interaction.png
+
+plot_correlation_heatmap:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/correlation_heatmap.png
+
 # --- Gráficos del pipeline `model_regression` ---
 plot_age_vs_charges:
   type: matplotlib.MatplotlibDataset

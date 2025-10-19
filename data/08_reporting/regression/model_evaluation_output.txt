@@ -1,0 +1,12 @@
+Precisión del Modelo (R-cuadrado): 0.8069
+
+Impacto de cada variable en el costo:
+                   Coeficiente
+age                 248.210720
+bmi                 318.701441
+children            533.009989
+sex_male           -101.542054
+smoker_yes        23077.764593
+region_northwest   -391.761455
+region_southeast   -838.919616
+region_southwest   -659.139752
