@@ -1,10 +1,97 @@
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 import logging
 
 log = logging.getLogger(__name__)
+
+
+def create_univariate_regression_plots(
+    df_cleaned: pd.DataFrame,
+) -> tuple[Figure, Figure, str]:
+    """Genera gráficos de regresión univariada y un resumen de texto.
+
+    Args:
+        df_cleaned: Los datos limpios del seguro médico para la regresión.
+
+    Returns:
+        A tuple containing:
+            - fig_age_vs_charges (Figure): Plot of age vs. charges.
+            - fig_bmi_vs_charges (Figure): Plot of BMI vs. charges.
+            - univariate_output (str): A formatted string with univariate regression interpretations.
+    """
+    plt.style.use("seaborn-v0_8-whitegrid")
+
+    # Gráfico de regresión para edad vs. costos
+    X_age = df_cleaned[["age"]]
+    y_age = df_cleaned["charges"]
+    model_age = LinearRegression()
+    model_age.fit(X_age, y_age)
+
+    fig_age_vs_charges, ax_age = plt.subplots(figsize=(10, 6))
+    sns.regplot(
+        x="age",
+        y="charges",
+        data=df_cleaned,
+        line_kws={"color": "#1f77b4"},
+        scatter_kws={"alpha": 0.5},
+        ax=ax_age,
+    )
+    r2_age = r2_score(y_age, model_age.predict(X_age))
+    ax_age.set_title(
+        f"Regresión Lineal: Costos vs. Edad (R² = {r2_age:.2f})",
+        fontsize=14,
+        weight="bold",
+    )
+    ax_age.set_xlabel("Edad")
+    ax_age.set_ylabel("Costo del Seguro (Charges)")
+    ax_age.grid(True, which="both", linestyle="--", linewidth=0.5)
+    fig_age_vs_charges.tight_layout()
+    plt.close(fig_age_vs_charges)
+
+    # Gráfico de regresión para IMC vs. costos
+    X_bmi = df_cleaned[["bmi"]]
+    y_bmi = df_cleaned["charges"]
+    model_bmi = LinearRegression()
+    model_bmi.fit(X_bmi, y_bmi)
+
+    fig_bmi_vs_charges, ax_bmi = plt.subplots(figsize=(10, 6))
+    sns.regplot(
+        x="bmi",
+        y="charges",
+        data=df_cleaned,
+        line_kws={"color": "#2ca02c"},
+        scatter_kws={"alpha": 0.5},
+        ax=ax_bmi,
+    )
+    r2_bmi = r2_score(y_bmi, model_bmi.predict(X_bmi))
+    ax_bmi.set_title(
+        f"Regresión Lineal: Costos vs. IMC (R² = {r2_bmi:.2f})",
+        fontsize=14,
+        weight="bold",
+    )
+    ax_bmi.set_xlabel("Índice de Masa Corporal (BMI)")
+    ax_bmi.set_ylabel("Costo del Seguro (Charges)")
+    ax_bmi.grid(True, which="both", linestyle="--", linewidth=0.5)
+    fig_bmi_vs_charges.tight_layout()
+    plt.close(fig_bmi_vs_charges)
+
+    # Genera un resumen de texto con las interpretaciones de los gráficos
+    univariate_output = f"Ecuación (Edad): charges = {model_age.coef_[0]:.2f} * age + {model_age.intercept_:.2f}\n\n"
+    univariate_output += f"Ecuación (IMC): charges = {model_bmi.coef_[0]:.2f} * bmi + {model_bmi.intercept_:.2f}\n\n"
+    univariate_output += "Interpretación (Edad): Se observa una clara tendencia positiva: a mayor edad, mayor es el costo. Sin embargo, los datos parecen agruparse en tres 'bandas' distintas. Esto sugiere que hay otro factor muy importante que no estamos considerando.\n\n"
+    univariate_output += "Interpretación (IMC): La relación positiva también existe, pero es más débil y los datos están mucho más dispersos. Al igual que con la edad, parece haber una división en los datos que este modelo simple no puede explicar.\n\n"
+    univariate_output += "Interpretación (Fumador): ¡Este es el hallazgo clave! La diferencia en costos entre fumadores y no fumadores es masiva. Ser fumador no solo eleva el costo promedio, sino que también aumenta la variabilidad. Esto explica las 'bandas' que vimos en los gráficos anteriores."
+
+    return (
+        fig_age_vs_charges,
+        fig_bmi_vs_charges,
+        univariate_output,
+    )
 
 
 def train_model(

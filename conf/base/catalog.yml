@@ -93,54 +93,59 @@ log_reg_feature_importance:
 # 08_REPORTING: Gráficos y reportes de texto generados para el análisis.
 # ----------------------------------------------------------------------------------
 
-# --- Gráficos del pipeline `exploratory_data` ---
-plot_age_vs_charges:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/age_vs_charges.png
-
-plot_bmi_vs_charges:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/bmi_vs_charges.png
-
 plot_smoker_vs_charges:
   type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/smoker_vs_charges.png
+  filepath: data/08_reporting/exploratory/smoker_vs_charges.png
 
 plot_bmi_smoker_interaction:
   type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/bmi_smoker_interaction.png
+  filepath: data/08_reporting/exploratory/bmi_smoker_interaction.png
 
 plot_correlation_heatmap:
   type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/correlation_heatmap.png
+  filepath: data/08_reporting/exploratory/correlation_heatmap.png
 
 plot_age_histogram:
   type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_age_histogram.png
+  filepath: data/08_reporting/exploratory/plot_age_histogram.png
 
 plot_bmi_histogram:
   type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_bmi_histogram.png
+  filepath: data/08_reporting/exploratory/plot_bmi_histogram.png
 
 plot_charges_histogram:
   type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_charges_histogram.png
+  filepath: data/08_reporting/exploratory/plot_charges_histogram.png
 
 plot_children_barplot:
   type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_children_barplot.png
+  filepath: data/08_reporting/exploratory/plot_children_barplot.png
 
 plot_age_boxplot:
   type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_age_boxplot.png
+  filepath: data/08_reporting/exploratory/plot_age_boxplot.png
 
 plot_bmi_boxplot:
   type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_bmi_boxplot.png
+  filepath: data/08_reporting/exploratory/plot_bmi_boxplot.png
 
 plot_charges_boxplot:
   type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_charges_boxplot.png
+  filepath: data/08_reporting/exploratory/plot_charges_boxplot.png
+
+# --- Gráficos del pipeline `model_regression` ---
+plot_age_vs_charges:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/regression/age_vs_charges.png
+
+plot_bmi_vs_charges:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/regression/bmi_vs_charges.png
+
+univariate_regression_output:
+  type: text.TextDataset
+  filepath: data/08_reporting/regression/univariate_regression_output.txt
+
 
 # --- Gráficos del pipeline `model_classification` ---
 plot_log_reg_feature_importance:
@@ -160,13 +165,9 @@ plot_svc_grid_search_heatmap:
   filepath: data/08_reporting/svc_grid_search_heatmap.png
 
 # --- Reportes de texto ---
-univariate_regression_output:
-  type: text.TextDataset
-  filepath: data/08_reporting/univariate_regression_output.txt
-
 model_evaluation_output:
   type: text.TextDataset
-  filepath: data/08_reporting/model_evaluation_output.txt
+  filepath: data/08_reporting/regression/model_evaluation_output.txt
 
 classification_summary_output:
   type: text.TextDataset

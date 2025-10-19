@@ -1,6 +1,6 @@
 from kedro.pipeline import Pipeline, node, pipeline
 
-from .nodes import train_model, evaluate_model
+from .nodes import create_univariate_regression_plots, train_model, evaluate_model
 
 
 def create_pipeline(**kwargs) -> Pipeline:
@@ -16,6 +16,17 @@ def create_pipeline(**kwargs) -> Pipeline:
     """
     return pipeline(
         [
+            node(
+                # Genera gráficos de regresión simple para 'age' y 'bmi' vs 'charges'.
+                func=create_univariate_regression_plots,
+                inputs="processed_medical_data",
+                outputs=[
+                    "plot_age_vs_charges",
+                    "plot_bmi_vs_charges",
+                    "univariate_regression_output",
+                ],
+                name="create_univariate_regression_plots_node",
+            ),
             node(
                 # Divide los datos y entrena el modelo de regresión lineal.
                 func=train_model,
