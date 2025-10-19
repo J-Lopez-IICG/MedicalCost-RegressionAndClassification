@@ -1,187 +1,173 @@
-raw_medical_data_csv:
-  type: kedro_datasets.pandas.CSVDataset
+# ----------------------------------------------------------------------------------
+# 01_RAW: Datos crudos descargados por el pipeline `data_engineering`.
+# ----------------------------------------------------------------------------------
+raw_medical_cost_data:
+  type: pandas.CSVDataset
   filepath: data/01_raw/medical_insurance_cost.csv
 
-processed_medical_data_excel:
-  type: kedro_datasets.pandas.ExcelDataset
-  filepath: data/02_intermediate/medical_insurance_cost_processed.xlsx
+# ----------------------------------------------------------------------------------
+# 02_INTERMEDIATE: Datos procesados por el pipeline `data_processing`.
+# ----------------------------------------------------------------------------------
+processed_medical_data:
+  type: pandas.ExcelDataset
+  filepath: data/02_intermediate/medical_insurance_cost.xlsx
 
-featured_medical_data:
-  type: kedro_datasets.pandas.CSVDataset
-  filepath: data/04_feature/medical_insurance_cost_featured.csv
+# ----------------------------------------------------------------------------------
+# 03_PRIMARY: Datos preparados y listos para el modelado, generados por `feature_engineering`.
+# ----------------------------------------------------------------------------------
+primary_medical_data:
+  type: pandas.ExcelDataset
+  filepath: data/03_primary/medical_insurance_cost_prepared.xlsx
 
-classification_input_data_with_target:
-  type: kedro_datasets.pandas.CSVDataset
-  filepath: data/05_model_input/medical_insurance_cost_classification_input.csv
-
-# Model outputs
+# ----------------------------------------------------------------------------------
+# 06_MODELS: Modelos serializados guardados por los pipelines de modelado.
+# ----------------------------------------------------------------------------------
 reg_model:
-  type: kedro_datasets.pickle.PickleDataset
+  type: pickle.PickleDataset
   filepath: data/06_models/linear_regression_model.pkl
 
-r2_score_output:
-  type: kedro_datasets.json.JSONDataset
-  filepath: data/07_model_output/r2_score.json
-
-model_coefficients:
-  type: kedro_datasets.pandas.CSVDataset
-  filepath: data/07_model_output/model_coefficients.csv
-
-# Reporting outputs (plots and text)
-plot_age_vs_charges:
-  type: kedro_datasets.matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/age_vs_charges.png
-
-plot_bmi_vs_charges:
-  type: kedro_datasets.matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/bmi_vs_charges.png
-
-plot_smoker_vs_charges:
-  type: kedro_datasets.matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/smoker_vs_charges.png
-
-plot_bmi_smoker_interaction:
-  type: kedro_datasets.matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/bmi_smoker_interaction.png
-
-plot_correlation_heatmap:
-  type: kedro_datasets.matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/correlation_heatmap.png
-
-univariate_regression_output:
-  type: kedro_datasets.text.TextDataset
-  filepath: data/08_reporting/univariate_regression_output.txt
-
-model_evaluation_output:
-  type: kedro_datasets.text.TextDataset
-  filepath: data/08_reporting/model_evaluation_output.txt
-
-# Classification Model outputs
 log_reg_model:
-  type: kedro_datasets.pickle.PickleDataset
+  type: pickle.PickleDataset
   filepath: data/06_models/logistic_regression_model.pkl
 
 random_forest_model:
-  type: kedro_datasets.pickle.PickleDataset
+  type: pickle.PickleDataset
   filepath: data/06_models/random_forest_model.pkl
 
 xgboost_model:
-  type: kedro_datasets.pickle.PickleDataset
+  type: pickle.PickleDataset
   filepath: data/06_models/xgboost_model.pkl
 
 svc_model:
-  type: kedro_datasets.pickle.PickleDataset
+  type: pickle.PickleDataset
   filepath: data/06_models/svc_model.pkl
 
+# ----------------------------------------------------------------------------------
+# 07_MODEL_OUTPUT: Métricas y resultados numéricos de los modelos.
+# ----------------------------------------------------------------------------------
+r2_score_output:
+  type: json.JSONDataset
+  filepath: data/07_model_output/r2_score.json
+
+model_coefficients:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/model_coefficients.csv
+
 classification_accuracy_log_reg:
-  type: kedro_datasets.json.JSONDataset
+  type: json.JSONDataset
   filepath: data/07_model_output/classification_accuracy_log_reg.json
 
 classification_accuracy_rf:
-  type: kedro_datasets.json.JSONDataset
+  type: json.JSONDataset
   filepath: data/07_model_output/classification_accuracy_rf.json
 
 classification_accuracy_xgb:
-  type: kedro_datasets.json.JSONDataset
+  type: json.JSONDataset
   filepath: data/07_model_output/classification_accuracy_xgb.json
 
 classification_accuracy_svc:
-  type: kedro_datasets.json.JSONDataset
+  type: json.JSONDataset
   filepath: data/07_model_output/classification_accuracy_svc.json
 
 classification_report_log_reg:
-  type: kedro_datasets.text.TextDataset
+  type: text.TextDataset
   filepath: data/07_model_output/classification_report_log_reg.txt
 
 classification_report_rf:
-  type: kedro_datasets.text.TextDataset
+  type: text.TextDataset
   filepath: data/07_model_output/classification_report_rf.txt
 
 classification_report_xgb:
-  type: kedro_datasets.text.TextDataset
+  type: text.TextDataset
   filepath: data/07_model_output/classification_report_xgb.txt
 
 classification_report_svc:
-  type: kedro_datasets.text.TextDataset
+  type: text.TextDataset
   filepath: data/07_model_output/classification_report_svc.txt
 
 log_reg_feature_importance:
-  type: kedro_datasets.pandas.CSVDataset
+  type: pandas.CSVDataset
   filepath: data/07_model_output/log_reg_feature_importance.csv
 
-# Classification Reporting outputs (plots and text)
+# ----------------------------------------------------------------------------------
+# 08_REPORTING: Gráficos y reportes de texto generados para el análisis.
+# ----------------------------------------------------------------------------------
+
+# --- Gráficos del pipeline `exploratory_data` ---
+plot_age_vs_charges:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/age_vs_charges.png
+
+plot_bmi_vs_charges:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/bmi_vs_charges.png
+
+plot_smoker_vs_charges:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/smoker_vs_charges.png
+
+plot_bmi_smoker_interaction:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/bmi_smoker_interaction.png
+
+plot_correlation_heatmap:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/correlation_heatmap.png
+
+plot_age_histogram:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/plot_age_histogram.png
+
+plot_bmi_histogram:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/plot_bmi_histogram.png
+
+plot_charges_histogram:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/plot_charges_histogram.png
+
+plot_children_barplot:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/plot_children_barplot.png
+
+plot_age_boxplot:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/plot_age_boxplot.png
+
+plot_bmi_boxplot:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/plot_bmi_boxplot.png
+
+plot_charges_boxplot:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/plot_charges_boxplot.png
+
+# --- Gráficos del pipeline `model_classification` ---
 plot_log_reg_feature_importance:
-  type: kedro_datasets.matplotlib.MatplotlibDataset
+  type: matplotlib.MatplotlibDataset
   filepath: data/08_reporting/log_reg_feature_importance.png
 
 plot_rf_grid_search_heatmap:
-  type: kedro_datasets.matplotlib.MatplotlibDataset
+  type: matplotlib.MatplotlibDataset
   filepath: data/08_reporting/rf_grid_search_heatmap.png
 
 plot_xgb_grid_search_heatmap:
-  type: kedro_datasets.matplotlib.MatplotlibDataset
+  type: matplotlib.MatplotlibDataset
   filepath: data/08_reporting/xgb_grid_search_heatmap.png
 
 plot_svc_grid_search_heatmap:
-  type: kedro_datasets.matplotlib.MatplotlibDataset
+  type: matplotlib.MatplotlibDataset
   filepath: data/08_reporting/svc_grid_search_heatmap.png
 
+# --- Reportes de texto ---
+univariate_regression_output:
+  type: text.TextDataset
+  filepath: data/08_reporting/univariate_regression_output.txt
+
+model_evaluation_output:
+  type: text.TextDataset
+  filepath: data/08_reporting/model_evaluation_output.txt
+
 classification_summary_output:
-  type: kedro_datasets.text.TextDataset
+  type: text.TextDataset
   filepath: data/08_reporting/classification_summary.txt
-
-plot_age_histogram:
-  type: kedro_datasets.matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_age_histogram.png
-  save_args:
-    transparent: false
-    bbox_inches: tight
-  versioned: false
-
-plot_bmi_histogram:
-  type: kedro_datasets.matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_bmi_histogram.png
-  save_args:
-    transparent: false
-    bbox_inches: tight
-  versioned: false
-
-plot_charges_histogram:
-  type: kedro_datasets.matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_charges_histogram.png
-  save_args:
-    transparent: false
-    bbox_inches: tight
-  versioned: false
-
-plot_children_barplot:
-  type: kedro_datasets.matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_children_barplot.png
-  save_args:
-    transparent: false
-    bbox_inches: tight
-  versioned: false
-
-plot_age_boxplot:
-  type: kedro_datasets.matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_age_boxplot.png
-  save_args:
-    transparent: false
-    bbox_inches: tight
-  versioned: false
-
-plot_bmi_boxplot:
-  type: kedro_datasets.matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_bmi_boxplot.png
-  save_args:
-    transparent: false
-    bbox_inches: tight
-  versioned: false
-
-plot_charges_boxplot:
-  type: kedro_datasets.matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_charges_boxplot.png
-  save_args:
-    transparent: false
-    bbox_inches: tight
-  versioned: false

@@ -1,9 +1,7 @@
 from kedro.pipeline import Pipeline, node, pipeline
 
 from .nodes import (
-    feature_engineering_for_classification,
     split_classification_data,
-    create_target_variable,
     train_and_evaluate_logistic_regression,
     train_and_evaluate_random_forest,
     train_and_evaluate_xgboost,
@@ -16,41 +14,26 @@ def create_pipeline(**kwargs) -> Pipeline:
     return pipeline(
         [
             node(
-                func=feature_engineering_for_classification,
-                inputs="featured_medical_data",
-                outputs="classification_input_data",
-                name="feature_engineering_for_classification_node",
-            ),
-            node(
                 func=split_classification_data,
-                inputs="classification_input_data",
+                inputs={
+                    "featured_classification_data": "featured_classification_data",
+                    "parameters": "params:model_classification",
+                },
                 outputs=[
                     "cls_X_train",
                     "cls_X_test",
                     "cls_y_train",
                     "cls_y_test",
-                    "X_cls",
-                    "y_cls",  # This now contains 'charges'
                 ],
                 name="split_classification_data_node",
-            ),
-            node(
-                func=create_target_variable,
-                inputs=["cls_y_train", "cls_y_test"],
-                outputs=[
-                    "cls_y_train_binary",
-                    "cls_y_test_binary",
-                ],
-                name="create_target_variable_node",
             ),
             node(
                 func=train_and_evaluate_logistic_regression,
                 inputs=[
                     "cls_X_train",
                     "cls_X_test",
-                    "cls_y_train_binary",
-                    "cls_y_test_binary",
-                    "X_cls",
+                    "cls_y_train",
+                    "cls_y_test",
                 ],
                 outputs=[
                     "log_reg_model",
@@ -63,12 +46,13 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=train_and_evaluate_random_forest,
-                inputs=[
-                    "cls_X_train",
-                    "cls_X_test",
-                    "cls_y_train_binary",
-                    "cls_y_test_binary",
-                ],
+                inputs={
+                    "cls_X_train": "cls_X_train",
+                    "cls_X_test": "cls_X_test",
+                    "cls_y_train": "cls_y_train",
+                    "cls_y_test": "cls_y_test",
+                    "parameters": "params:model_classification.random_forest",
+                },
                 outputs=[
                     "random_forest_model",
                     "classification_accuracy_rf",
@@ -79,12 +63,13 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=train_and_evaluate_xgboost,
-                inputs=[
-                    "cls_X_train",
-                    "cls_X_test",
-                    "cls_y_train_binary",
-                    "cls_y_test_binary",
-                ],
+                inputs={
+                    "cls_X_train": "cls_X_train",
+                    "cls_X_test": "cls_X_test",
+                    "cls_y_train": "cls_y_train",
+                    "cls_y_test": "cls_y_test",
+                    "parameters": "params:model_classification.xgboost",
+                },
                 outputs=[
                     "xgboost_model",
                     "classification_accuracy_xgb",
@@ -95,12 +80,13 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=train_and_evaluate_svc,
-                inputs=[
-                    "cls_X_train",
-                    "cls_X_test",
-                    "cls_y_train_binary",
-                    "cls_y_test_binary",
-                ],
+                inputs={
+                    "cls_X_train": "cls_X_train",
+                    "cls_X_test": "cls_X_test",
+                    "cls_y_train": "cls_y_train",
+                    "cls_y_test": "cls_y_test",
+                    "parameters": "params:model_classification.svc",
+                },
                 outputs=[
                     "svc_model",
                     "classification_accuracy_svc",

@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import seaborn as sns
-import matplotlib
+import matplotlib  # noqa: I201
 
 matplotlib.use("Agg")  # Use non-interactive backend
 import matplotlib.pyplot as plt
@@ -11,12 +11,12 @@ from sklearn.metrics import r2_score
 
 
 def plot_univariate_regressions(
-    df_raw: pd.DataFrame,
+    df_cleaned: pd.DataFrame,
 ) -> tuple[Figure, Figure, Figure, str]:
-    """Generates univariate regression plots and a text summary.
+    """Genera gráficos de regresión univariada y un resumen de texto.
 
     Args:
-        df_raw: The raw medical insurance data.
+        df_cleaned: Los datos limpios del seguro médico para la regresión.
 
     Returns:
         A tuple containing:
@@ -25,9 +25,9 @@ def plot_univariate_regressions(
             - fig_smoker_vs_charges (Figure): Plot of smoker vs. charges.
             - univariate_output (str): A formatted string with univariate regression interpretations.
     """
-    # Plot age vs. charges
-    X_age = df_raw[["age"]]
-    y_age = df_raw["charges"]
+    # Gráfico de regresión para edad vs. costos
+    X_age = df_cleaned[["age"]]
+    y_age = df_cleaned["charges"]
     model_age = LinearRegression()
     plt.style.use("seaborn-v0_8-whitegrid")
     model_age.fit(X_age, y_age)
@@ -36,8 +36,8 @@ def plot_univariate_regressions(
     sns.regplot(
         x="age",
         y="charges",
-        data=df_raw,
-        line_kws={"color": "#1f77b4"},  # Changed color to a standard blue
+        data=df_cleaned,
+        line_kws={"color": "#1f77b4"},
         scatter_kws={"alpha": 0.5},
         ax=ax_age,
     )
@@ -51,11 +51,11 @@ def plot_univariate_regressions(
     ax_age.set_ylabel("Costo del Seguro (Charges)")
     ax_age.grid(True, which="both", linestyle="--", linewidth=0.5)
     fig_age_vs_charges.tight_layout()
-    plt.close(fig_age_vs_charges)  # Added to close figure
+    plt.close(fig_age_vs_charges)
 
-    # Plot BMI vs. charges
-    X_bmi = df_raw[["bmi"]]
-    y_bmi = df_raw["charges"]
+    # Gráfico de regresión para IMC vs. costos
+    X_bmi = df_cleaned[["bmi"]]
+    y_bmi = df_cleaned["charges"]
     model_bmi = LinearRegression()
     model_bmi.fit(X_bmi, y_bmi)
 
@@ -63,8 +63,8 @@ def plot_univariate_regressions(
     sns.regplot(
         x="bmi",
         y="charges",
-        data=df_raw,
-        line_kws={"color": "#2ca02c"},  # Changed color to a standard green
+        data=df_cleaned,
+        line_kws={"color": "#2ca02c"},
         scatter_kws={"alpha": 0.5},
         ax=ax_bmi,
     )
@@ -78,14 +78,14 @@ def plot_univariate_regressions(
     ax_bmi.set_ylabel("Costo del Seguro (Charges)")
     ax_bmi.grid(True, which="both", linestyle="--", linewidth=0.5)
     fig_bmi_vs_charges.tight_layout()
-    plt.close(fig_bmi_vs_charges)  # Added to close figure
+    plt.close(fig_bmi_vs_charges)
 
-    # Plot smoker vs. charges
+    # Gráfico de caja para fumador vs. costos
     fig_smoker_vs_charges, ax_smoker = plt.subplots(figsize=(8, 6))
     sns.boxplot(
         x="smoker",
         y="charges",
-        data=df_raw,
+        data=df_cleaned,
         ax=ax_smoker,
         palette="viridis",
         hue="smoker",
@@ -96,8 +96,9 @@ def plot_univariate_regressions(
     ax_smoker.set_xlabel("¿Es Fumador?")
     ax_smoker.set_ylabel("Costo del Seguro (Charges)")
     fig_smoker_vs_charges.tight_layout()
-    plt.close(fig_smoker_vs_charges)  # Added to close figure
+    plt.close(fig_smoker_vs_charges)
 
+    # Genera un resumen de texto con las interpretaciones de los gráficos
     univariate_output = f"Ecuación (Edad): charges = {model_age.coef_[0]:.2f} * age + {model_age.intercept_:.2f}\n\n"
     univariate_output += f"Ecuación (IMC): charges = {model_bmi.coef_[0]:.2f} * bmi + {model_bmi.intercept_:.2f}\n\n"
     univariate_output += "Interpretación (Edad): Se observa una clara tendencia positiva: a mayor edad, mayor es el costo. Sin embargo, los datos parecen agruparse en tres 'bandas' distintas. Esto sugiere que hay otro factor muy importante que no estamos considerando.\n\n"
@@ -112,49 +113,56 @@ def plot_univariate_regressions(
     )
 
 
-def plot_interactions_and_correlations(df_raw: pd.DataFrame) -> tuple[Figure, Figure]:
-    """Generates interaction and correlation plots.
+def plot_interactions_and_correlations(
+    df_cleaned: pd.DataFrame,
+) -> tuple[Figure, Figure]:
+    """Genera gráficos de interacción y correlación.
 
     Args:
-        df_raw: The raw medical insurance data.
+        df_cleaned: Los datos limpios del seguro médico.
 
     Returns:
         A tuple containing:
             - fig_bmi_smoker_interaction (Figure): Plot of BMI, smoker interaction.
             - fig_correlation_heatmap (Figure): Plot of correlation heatmap.
     """
-    # Plot BMI, smoker interaction
+    # Gráfico de dispersión para la interacción entre IMC y fumador
     fig_bmi_smoker_interaction, ax_interaction = plt.subplots(figsize=(12, 8))
     sns.scatterplot(
-        x="bmi", y="charges", hue="smoker", data=df_raw, alpha=0.7, ax=ax_interaction
+        x="bmi",
+        y="charges",
+        hue="smoker",
+        data=df_cleaned,
+        alpha=0.7,
+        ax=ax_interaction,
     )
     ax_interaction.set_title("Interacción entre IMC, ser Fumador y Costos del Seguro")
     ax_interaction.set_xlabel("Índice de Masa Corporal (BMI)")
     ax_interaction.set_ylabel("Costo del Seguro (Charges)")
     ax_interaction.grid(True)
-    fig_bmi_smoker_interaction.tight_layout()  # Ensure tight layout for this plot too
-    plt.close(fig_bmi_smoker_interaction)  # Added to close figure
+    fig_bmi_smoker_interaction.tight_layout()
+    plt.close(fig_bmi_smoker_interaction)
 
-    # Plot correlation heatmap
-    numeric_cols = df_raw.select_dtypes(include=np.number)
+    # Mapa de calor para la matriz de correlación
+    numeric_cols = df_cleaned.select_dtypes(include=np.number)
     fig_correlation_heatmap, ax_heatmap = plt.subplots(figsize=(10, 8))
     sns.heatmap(
         numeric_cols.corr(), annot=True, cmap="coolwarm", fmt=".2f", ax=ax_heatmap
     )
     ax_heatmap.set_title("Matriz de Correlación de Variables Numéricas")
-    fig_correlation_heatmap.tight_layout()  # Ensure tight layout for this plot too
-    plt.close(fig_correlation_heatmap)  # Added to close figure
+    fig_correlation_heatmap.tight_layout()
+    plt.close(fig_correlation_heatmap)
 
     return fig_bmi_smoker_interaction, fig_correlation_heatmap
 
 
 def plot_numerical_distributions(
-    df_raw: pd.DataFrame,
+    df_cleaned: pd.DataFrame,
 ) -> tuple[Figure, Figure, Figure, Figure]:
-    """Generates distribution plots for numerical columns.
+    """Genera gráficos de distribución para las columnas numéricas.
 
     Args:
-        df_raw: The raw medical insurance data.
+        df_cleaned: Los datos limpios del seguro médico.
 
     Returns:
         A tuple containing:
@@ -165,45 +173,41 @@ def plot_numerical_distributions(
     """
     plt.style.use("seaborn-v0_8-whitegrid")
 
-    # Histograms for continuous numerical columns
+    # Histograma para la edad
     fig_age_hist, ax_age = plt.subplots(figsize=(10, 6))
-    sns.histplot(
-        data=df_raw, x="age", kde=True, ax=ax_age, color="#ff7f0e"
-    )  # Changed color to a standard orange
+    sns.histplot(data=df_cleaned, x="age", kde=True, ax=ax_age, color="#ff7f0e")
     ax_age.set_title("Distribución de la Edad", fontsize=14, weight="bold")
     ax_age.set_xlabel("Edad")
     ax_age.set_ylabel("Frecuencia")
     fig_age_hist.tight_layout()
-    plt.close(fig_age_hist)  # Added to close figure
+    plt.close(fig_age_hist)
 
+    # Histograma para el IMC
     fig_bmi_hist, ax_bmi = plt.subplots(figsize=(10, 6))
-    sns.histplot(
-        data=df_raw, x="bmi", kde=True, ax=ax_bmi, color="#d62728"
-    )  # Changed color to a standard red
+    sns.histplot(data=df_cleaned, x="bmi", kde=True, ax=ax_bmi, color="#d62728")
     ax_bmi.set_title(
         "Distribución del Índice de Masa Corporal (BMI)", fontsize=14, weight="bold"
     )
     ax_bmi.set_xlabel("BMI")
     ax_bmi.set_ylabel("Frecuencia")
     fig_bmi_hist.tight_layout()
-    plt.close(fig_bmi_hist)  # Added to close figure
+    plt.close(fig_bmi_hist)
 
+    # Histograma para los costos
     fig_charges_hist, ax_charges = plt.subplots(figsize=(10, 6))
-    sns.histplot(
-        data=df_raw, x="charges", kde=True, ax=ax_charges, color="#9467bd"
-    )  # Changed color to a standard purple
+    sns.histplot(data=df_cleaned, x="charges", kde=True, ax=ax_charges, color="#9467bd")
     ax_charges.set_title(
         "Distribución de los Costos del Seguro (Charges)", fontsize=14, weight="bold"
     )
     ax_charges.set_xlabel("Charges")
     ax_charges.set_ylabel("Frecuencia")
     fig_charges_hist.tight_layout()
-    plt.close(fig_charges_hist)  # Added to close figure
+    plt.close(fig_charges_hist)
 
-    # Bar plot for discrete numerical column (children)
+    # Gráfico de barras para el número de hijos
     fig_children_bar, ax_children = plt.subplots(figsize=(8, 6))
     sns.countplot(
-        x="children", data=df_raw, ax=ax_children, palette="viridis", hue="children"
+        x="children", data=df_cleaned, ax=ax_children, palette="viridis", hue="children"
     )
     ax_children.set_title(
         "Distribución del Número de Hijos", fontsize=14, weight="bold"
@@ -211,7 +215,7 @@ def plot_numerical_distributions(
     ax_children.set_xlabel("Número de Hijos")
     ax_children.set_ylabel("Conteo")
     fig_children_bar.tight_layout()
-    plt.close(fig_children_bar)  # Added to close figure
+    plt.close(fig_children_bar)
 
     return (
         fig_age_hist,
@@ -221,11 +225,11 @@ def plot_numerical_distributions(
     )
 
 
-def plot_numerical_boxplots(df_raw: pd.DataFrame) -> tuple[Figure, Figure, Figure]:
-    """Generates box plots for continuous numerical columns to identify outliers.
+def plot_numerical_boxplots(df_cleaned: pd.DataFrame) -> tuple[Figure, Figure, Figure]:
+    """Genera diagramas de caja para identificar outliers en columnas numéricas.
 
     Args:
-        df_raw: The raw medical insurance data.
+        df_cleaned: Los datos limpios del seguro médico.
 
     Returns:
         A tuple containing:
@@ -235,17 +239,17 @@ def plot_numerical_boxplots(df_raw: pd.DataFrame) -> tuple[Figure, Figure, Figur
     """
     plt.style.use("seaborn-v0_8-whitegrid")
 
-    # Box plot for age
+    # Diagrama de caja para la edad
     fig_age_boxplot, ax_age = plt.subplots(figsize=(8, 6))
-    sns.boxplot(y=df_raw["age"], ax=ax_age, color="#1f77b4")
+    sns.boxplot(y=df_cleaned["age"], ax=ax_age, color="#1f77b4")
     ax_age.set_title("Box Plot de Edad", fontsize=14, weight="bold")
     ax_age.set_ylabel("Edad")
     fig_age_boxplot.tight_layout()
     plt.close(fig_age_boxplot)
 
-    # Box plot for BMI
+    # Diagrama de caja para el IMC
     fig_bmi_boxplot, ax_bmi = plt.subplots(figsize=(8, 6))
-    sns.boxplot(y=df_raw["bmi"], ax=ax_bmi, color="#2ca02c")
+    sns.boxplot(y=df_cleaned["bmi"], ax=ax_bmi, color="#2ca02c")
     ax_bmi.set_title(
         "Box Plot del Índice de Masa Corporal (BMI)", fontsize=14, weight="bold"
     )
@@ -253,9 +257,9 @@ def plot_numerical_boxplots(df_raw: pd.DataFrame) -> tuple[Figure, Figure, Figur
     fig_bmi_boxplot.tight_layout()
     plt.close(fig_bmi_boxplot)
 
-    # Box plot for charges
+    # Diagrama de caja para los costos
     fig_charges_boxplot, ax_charges = plt.subplots(figsize=(8, 6))
-    sns.boxplot(y=df_raw["charges"], ax=ax_charges, color="#ff7f0e")
+    sns.boxplot(y=df_cleaned["charges"], ax=ax_charges, color="#ff7f0e")
     ax_charges.set_title(
         "Box Plot de los Costos del Seguro (Charges)", fontsize=14, weight="bold"
     )

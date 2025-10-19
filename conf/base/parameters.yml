@@ -1,42 +1,57 @@
-# Parameters for data engineering
+# ----------------------------------------------------------------------------------
+# Pipeline: data_engineering
+# ----------------------------------------------------------------------------------
 data_engineering:
+  # Identificador del dataset en Kaggle (usuario/dataset-name).
   dataset_handle: "mirichoi0218/insurance"
+  # Carpeta temporal para descargar y descomprimir los datos.
   temp_download_path: "data/temp_kaggle"
 
-# Parameters for data processing
-data_processing:
-  classification_threshold_method: "median" # or "mean", or a specific value
-
-# Parameters for model regression
+# ----------------------------------------------------------------------------------
+# Pipeline: model_regression
+# ----------------------------------------------------------------------------------
 model_regression:
+  # Proporción del dataset que se usará para el conjunto de prueba.
+  test_size: 0.2
+  # Semilla aleatoria para asegurar la reproducibilidad de la división de datos.
+  random_state: 42
+
+# ----------------------------------------------------------------------------------
+# Pipeline: model_classification
+# ----------------------------------------------------------------------------------
+model_classification:
+  # Parámetros generales para la división de datos en este pipeline.
   test_size: 0.2
   random_state: 42
 
-# Parameters for model classification
-model_classification:
-  test_size: 0.2
-  random_state: 42
+  # Parámetros específicos para el modelo de Regresión Logística.
   logistic_regression:
     max_iter: 1000
+
+  # Parámetros para la búsqueda de hiperparámetros (GridSearch) de Random Forest.
   random_forest:
     param_grid:
       n_estimators: [50, 100, 200]
-      max_depth: [null, 10, 20] # null in YAML maps to None in Python
+      max_depth: [null, 10, 20] # 'null' en YAML se convierte en 'None' en Python.
       min_samples_split: [2, 5]
       min_samples_leaf: [1, 2]
+
+  # Parámetros para la búsqueda de hiperparámetros (GridSearch) de XGBoost.
   xgboost:
     param_grid:
       n_estimators: [100, 200, 300]
       max_depth: [3, 5, 7]
       learning_rate: [0.05, 0.1]
       subsample: [0.8, 1.0]
-    eval_metric: "logloss"
+
+  # Parámetros para la búsqueda de hiperparámetros (GridSearch) de SVC.
   svc:
     param_grid:
       C: [0.1, 1, 10]
       gamma: ["scale", "auto", 0.1, 1]
-    probability: true
+
+  # Parámetros generales para GridSearchCV que se aplican a todos los modelos.
   grid_search:
-    cv: 5
-    n_jobs: -1
-    verbose: 0
+    cv: 5 # Número de folds para la validación cruzada.
+    n_jobs: -1 # Usar todos los procesadores disponibles.
+    verbose: 0 # Nivel de detalle de los logs durante la búsqueda.
