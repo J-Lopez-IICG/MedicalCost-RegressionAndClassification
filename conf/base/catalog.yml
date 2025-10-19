@@ -94,35 +94,35 @@ log_reg_feature_importance:
 # ----------------------------------------------------------------------------------
 
 plot_smoker_vs_charges:
-  type: matplotlib.MatplotlibDataset
+  type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/exploratory/smoker_vs_charges.png
 
 plot_age_histogram:
-  type: matplotlib.MatplotlibDataset
+  type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/exploratory/plot_age_histogram.png
 
 plot_bmi_histogram:
-  type: matplotlib.MatplotlibDataset
+  type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/exploratory/plot_bmi_histogram.png
 
 plot_charges_histogram:
-  type: matplotlib.MatplotlibDataset
+  type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/exploratory/plot_charges_histogram.png
 
 plot_children_barplot:
-  type: matplotlib.MatplotlibDataset
+  type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/exploratory/plot_children_barplot.png
 
 plot_age_boxplot:
-  type: matplotlib.MatplotlibDataset
+  type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/exploratory/plot_age_boxplot.png
 
 plot_bmi_boxplot:
-  type: matplotlib.MatplotlibDataset
+  type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/exploratory/plot_bmi_boxplot.png
 
 plot_charges_boxplot:
-  type: matplotlib.MatplotlibDataset
+  type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/exploratory/plot_charges_boxplot.png
 
 plot_bmi_smoker_interaction:
@@ -135,38 +135,39 @@ plot_correlation_heatmap:
 
 # --- Gráficos del pipeline `model_regression` ---
 plot_age_vs_charges:
-  type: matplotlib.MatplotlibDataset
+  type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/regression/age_vs_charges.png
 
 plot_bmi_vs_charges:
-  type: matplotlib.MatplotlibDataset
+  type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/regression/bmi_vs_charges.png
 
 univariate_regression_output:
   type: text.TextDataset
   filepath: data/08_reporting/regression/univariate_regression_output.txt
 
-# --- Gráficos del pipeline `model_classification` ---
-plot_log_reg_feature_importance:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/log_reg_feature_importance.png
-
-plot_rf_grid_search_heatmap:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/rf_grid_search_heatmap.png
-
-plot_xgb_grid_search_heatmap:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/xgb_grid_search_heatmap.png
-
-plot_svc_grid_search_heatmap:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/svc_grid_search_heatmap.png
-
-# --- Reportes de texto ---
 model_evaluation_output:
   type: text.TextDataset
   filepath: data/08_reporting/regression/model_evaluation_output.txt
+
+# --- Gráficos del pipeline `model_classification` ---
+plot_log_reg_feature_importance:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/log_reg_feature_importance.png
+
+plot_rf_grid_search_heatmap:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/rf_grid_search_heatmap.png
+
+plot_xgb_grid_search_heatmap:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/xgb_grid_search_heatmap.png
+
+plot_svc_grid_search_heatmap:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/svc_grid_search_heatmap.png
+
+# --- Reportes de texto ---
 
 classification_summary_output:
   type: text.TextDataset
