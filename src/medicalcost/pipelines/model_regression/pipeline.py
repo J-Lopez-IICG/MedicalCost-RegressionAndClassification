@@ -8,7 +8,10 @@ def create_pipeline(**kwargs) -> Pipeline:
         [
             node(
                 func=train_model,
-                inputs="featured_medical_data",
+                inputs={
+                    "primary_medical_data": "primary_medical_data",
+                    "parameters": "params:model_regression",
+                },
                 outputs=["reg_model", "reg_X_test", "reg_y_test", "y_pred", "X"],
                 name="train_linear_regression_model_node",
             ),

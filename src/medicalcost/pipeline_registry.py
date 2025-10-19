@@ -33,7 +33,7 @@ def register_pipelines() -> dict[str, Pipeline]:
         + data_processing_pipeline
         + exploratory_data_pipeline
         + feature_engineering_pipeline
-        + model_classification_pipeline
         + model_regression_pipeline
+        + model_classification_pipeline
     )
     return pipelines

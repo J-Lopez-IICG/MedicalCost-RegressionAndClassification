@@ -1,24 +1,21 @@
 import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-from matplotlib.figure import Figure  # Import Figure
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
-import json
 import logging
 
 log = logging.getLogger(__name__)
 
 
 def train_model(
-    df_model: pd.DataFrame,
+    primary_medical_data: pd.DataFrame,
+    parameters: dict,
 ) -> tuple[LinearRegression, pd.DataFrame, pd.Series, pd.Series, pd.DataFrame]:
     """Trains a linear regression model and splits data into training and testing sets.
 
     Args:
-        df_model: The preprocessed DataFrame.
+        primary_medical_data: The preprocessed DataFrame from the feature engineering pipeline.
+        parameters: Parameters dictionary containing test_size and random_state.
 
     Returns:
         A tuple containing:
@@ -28,10 +25,14 @@ def train_model(
             - y_pred (Series): Predicted testing targets.
             - X (DataFrame): All features used for training.
     """
-    X = df_model.drop("charges", axis=1)
-    y = df_model["charges"]
+    # 'cost_category' is for classification, so it must be dropped for the regression task.
+    X = primary_medical_data.drop(["charges", "cost_category"], axis=1)
+    y = primary_medical_data["charges"]
     X_train, reg_X_test, y_train, reg_y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
+        X,
+        y,
+        test_size=parameters["test_size"],
+        random_state=parameters["random_state"],
     )
 
     multi_model = LinearRegression()
