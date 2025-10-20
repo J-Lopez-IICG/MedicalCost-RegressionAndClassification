@@ -1,10 +1,11 @@
 from kedro.pipeline import Pipeline, node, pipeline
 
 from .nodes import (
-    plot_univariate_regressions,
+    plot_smoker_vs_charges_distribution,
     plot_interactions_and_correlations,
     plot_numerical_distributions,
     plot_numerical_boxplots,
+    plot_univariate_regressions,
 )
 
 
@@ -22,16 +23,11 @@ def create_pipeline(**kwargs) -> Pipeline:
     return pipeline(
         [
             node(
-                # Genera gráficos de regresión simple para 'age' y 'bmi' vs 'charges'.
-                func=plot_univariate_regressions,
+                # Genera un gráfico de caja para 'smoker' vs 'charges'.
+                func=plot_smoker_vs_charges_distribution,
                 inputs="processed_medical_data",
-                outputs=[
-                    "plot_age_vs_charges",
-                    "plot_bmi_vs_charges",
-                    "plot_smoker_vs_charges",
-                    "univariate_regression_output",
-                ],
-                name="plot_univariate_regressions_node",
+                outputs="plot_smoker_vs_charges",
+                name="plot_smoker_vs_charges_node",
             ),
             node(
                 # Visualiza la interacción entre 'bmi' y 'smoker', y la correlación general.
@@ -65,6 +61,17 @@ def create_pipeline(**kwargs) -> Pipeline:
                     "plot_charges_boxplot",
                 ],
                 name="plot_numerical_boxplots_node",
+            ),
+            node(
+                # Genera gráficos de regresión univariada.
+                func=plot_univariate_regressions,
+                inputs=["processed_medical_data", "params:exploratory_data"],
+                outputs=[
+                    "plot_age_vs_charges_regression",
+                    "plot_bmi_vs_charges_regression",
+                    "plot_children_vs_charges_regression",
+                ],
+                name="plot_univariate_regressions_node",
             ),
         ]
     )

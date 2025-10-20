@@ -1,0 +1,13 @@
+Precisión del Modelo (R-cuadrado en Test): 0.9025
+Precisión del Modelo (R-cuadrado en Train): 0.8698
+
+Importancia de cada variable en la predicción:
+                  Importancia
+smoker_yes           0.830691
+bmi                  0.099102
+age                  0.044029
+children             0.010777
+sex_male             0.004733
+region_southwest     0.004719
+region_northwest     0.003636
+region_southeast     0.002313

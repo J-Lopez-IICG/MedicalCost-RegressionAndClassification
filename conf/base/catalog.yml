@@ -22,152 +22,196 @@ primary_medical_data:
 # ----------------------------------------------------------------------------------
 # 06_MODELS: Modelos serializados guardados por los pipelines de modelado.
 # ----------------------------------------------------------------------------------
-reg_model:
+reg_model_lr:
   type: pickle.PickleDataset
-  filepath: data/06_models/linear_regression_model.pkl
+  filepath: data/06_models/regression/linear_regression_model.pkl
+
+reg_model_rf:
+  type: pickle.PickleDataset
+  filepath: data/06_models/regression/random_forest_regressor_model.pkl
+
+reg_model_xgb:
+  type: pickle.PickleDataset
+  filepath: data/06_models/regression/xgboost_regressor_model.pkl
+
+# --- Modelos del pipeline 'model_classification' ---
 
 log_reg_model:
   type: pickle.PickleDataset
-  filepath: data/06_models/logistic_regression_model.pkl
+  filepath: data/06_models/classification/logistic_regression_model.pkl
 
 random_forest_model:
   type: pickle.PickleDataset
-  filepath: data/06_models/random_forest_model.pkl
+  filepath: data/06_models/classification/random_forest_model.pkl
 
 xgboost_model:
   type: pickle.PickleDataset
-  filepath: data/06_models/xgboost_model.pkl
+  filepath: data/06_models/classification/xgboost_model.pkl
 
 svc_model:
   type: pickle.PickleDataset
-  filepath: data/06_models/svc_model.pkl
+  filepath: data/06_models/classification/svc_model.pkl
 
 # ----------------------------------------------------------------------------------
 # 07_MODEL_OUTPUT: Métricas y resultados numéricos de los modelos.
 # ----------------------------------------------------------------------------------
-r2_score_output:
+r2_score_lr:
   type: json.JSONDataset
-  filepath: data/07_model_output/r2_score.json
+  filepath: data/07_model_output/regression/r2_score_lr.json
 
-model_coefficients:
+metrics_lr:
   type: pandas.CSVDataset
-  filepath: data/07_model_output/model_coefficients.csv
+  filepath: data/07_model_output/regression/metrics_lr.csv
+
+r2_score_rf:
+  type: json.JSONDataset
+  filepath: data/07_model_output/regression/r2_score_rf.json
+
+metrics_rf:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/regression/metrics_rf.csv
+
+r2_score_xgb:
+  type: json.JSONDataset
+  filepath: data/07_model_output/regression/r2_score_xgb.json
+
+metrics_xgb:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/regression/metrics_xgb.csv
 
 classification_accuracy_log_reg:
   type: json.JSONDataset
-  filepath: data/07_model_output/classification_accuracy_log_reg.json
+  filepath: data/07_model_output/classification/accuracy_log_reg.json
 
 classification_accuracy_rf:
   type: json.JSONDataset
-  filepath: data/07_model_output/classification_accuracy_rf.json
+  filepath: data/07_model_output/classification/accuracy_rf.json
 
 classification_accuracy_xgb:
   type: json.JSONDataset
-  filepath: data/07_model_output/classification_accuracy_xgb.json
+  filepath: data/07_model_output/classification/accuracy_xgb.json
 
 classification_accuracy_svc:
   type: json.JSONDataset
-  filepath: data/07_model_output/classification_accuracy_svc.json
+  filepath: data/07_model_output/classification/accuracy_svc.json
 
 classification_report_log_reg:
   type: text.TextDataset
-  filepath: data/07_model_output/classification_report_log_reg.txt
+  filepath: data/07_model_output/classification/report_log_reg.txt
 
 classification_report_rf:
   type: text.TextDataset
-  filepath: data/07_model_output/classification_report_rf.txt
+  filepath: data/07_model_output/classification/report_rf.txt
 
 classification_report_xgb:
   type: text.TextDataset
-  filepath: data/07_model_output/classification_report_xgb.txt
+  filepath: data/07_model_output/classification/report_xgb.txt
 
 classification_report_svc:
   type: text.TextDataset
-  filepath: data/07_model_output/classification_report_svc.txt
+  filepath: data/07_model_output/classification/report_svc.txt
 
 log_reg_feature_importance:
   type: pandas.CSVDataset
-  filepath: data/07_model_output/log_reg_feature_importance.csv
+  filepath: data/07_model_output/classification/feature_importance_log_reg.csv
 
 # ----------------------------------------------------------------------------------
 # 08_REPORTING: Gráficos y reportes de texto generados para el análisis.
 # ----------------------------------------------------------------------------------
 
-# --- Gráficos del pipeline `exploratory_data` ---
-plot_age_vs_charges:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/age_vs_charges.png
-
-plot_bmi_vs_charges:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/bmi_vs_charges.png
-
 plot_smoker_vs_charges:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/smoker_vs_charges.png
-
-plot_bmi_smoker_interaction:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/bmi_smoker_interaction.png
-
-plot_correlation_heatmap:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/correlation_heatmap.png
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/smoker_vs_charges.png
 
 plot_age_histogram:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_age_histogram.png
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/plot_age_histogram.png
 
 plot_bmi_histogram:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_bmi_histogram.png
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/plot_bmi_histogram.png
 
 plot_charges_histogram:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_charges_histogram.png
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/plot_charges_histogram.png
 
 plot_children_barplot:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_children_barplot.png
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/plot_children_barplot.png
 
 plot_age_boxplot:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_age_boxplot.png
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/plot_age_boxplot.png
 
 plot_bmi_boxplot:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_bmi_boxplot.png
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/plot_bmi_boxplot.png
 
 plot_charges_boxplot:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/plot_charges_boxplot.png
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/plot_charges_boxplot.png
+
+plot_bmi_smoker_interaction:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/bmi_smoker_interaction.png
+
+plot_correlation_heatmap:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/correlation_heatmap.png
+
+plot_age_vs_charges_regression:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/age_vs_charges_regression.png
+
+plot_bmi_vs_charges_regression:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/bmi_vs_charges_regression.png
+
+plot_children_vs_charges_regression:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/children_vs_charges_regression.png
+
+regression_feature_correlation_heatmap:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/regression/feature_correlation_heatmap.png
+
+evaluation_output_lr:
+  type: text.TextDataset
+  filepath: data/08_reporting/regression/evaluation_output_lr.txt
+
+evaluation_output_rf:
+  type: text.TextDataset
+  filepath: data/08_reporting/regression/evaluation_output_rf.txt
+
+evaluation_output_xgb:
+  type: text.TextDataset
+  filepath: data/08_reporting/regression/evaluation_output_xgb.txt
+
+plot_r2_comparison:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/regression/r2_comparison_plot.png
 
 # --- Gráficos del pipeline `model_classification` ---
 plot_log_reg_feature_importance:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/log_reg_feature_importance.png
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/classification/feature_importance_log_reg.png
 
 plot_rf_grid_search_heatmap:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/rf_grid_search_heatmap.png
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/classification/grid_search_heatmap_rf.png
 
 plot_xgb_grid_search_heatmap:
-  type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/xgb_grid_search_heatmap.png
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/classification/grid_search_heatmap_xgb.png
 
 plot_svc_grid_search_heatmap:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/classification/grid_search_heatmap_svc.png
+
+plot_roc_curves_comparison:
   type: matplotlib.MatplotlibDataset
-  filepath: data/08_reporting/svc_grid_search_heatmap.png
-
-# --- Reportes de texto ---
-univariate_regression_output:
-  type: text.TextDataset
-  filepath: data/08_reporting/univariate_regression_output.txt
-
-model_evaluation_output:
-  type: text.TextDataset
-  filepath: data/08_reporting/model_evaluation_output.txt
+  filepath: data/08_reporting/classification/roc_curves_comparison.png
 
 classification_summary_output:
   type: text.TextDataset
-  filepath: data/08_reporting/classification_summary.txt
+  filepath: data/08_reporting/classification/summary.txt
