@@ -97,19 +97,19 @@ classification_accuracy_svc:
 
 classification_report_log_reg:
   type: text.TextDataset
-  filepath: data/07_model_output/classification/report_log_reg.txt
+  filepath: data/08_reporting/classification/report_log_reg.txt
 
 classification_report_rf:
   type: text.TextDataset
-  filepath: data/07_model_output/classification/report_rf.txt
+  filepath: data/08_reporting/classification/report_rf.txt
 
 classification_report_xgb:
   type: text.TextDataset
-  filepath: data/07_model_output/classification/report_xgb.txt
+  filepath: data/08_reporting/classification/report_xgb.txt
 
 classification_report_svc:
   type: text.TextDataset
-  filepath: data/07_model_output/classification/report_svc.txt
+  filepath: data/08_reporting/classification/report_svc.txt
 
 log_reg_feature_importance:
   type: pandas.CSVDataset

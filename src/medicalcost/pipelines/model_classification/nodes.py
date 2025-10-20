@@ -239,15 +239,21 @@ def create_classification_summary(
         "Random Forest": accuracy_rf["accuracy"],
     }
 
-    best_model_name = max(results, key=lambda k: results[k])
-    best_model_accuracy = results[best_model_name]
+    # Ordenar los resultados por precisión de mayor a menor
+    sorted_results = sorted(results.items(), key=lambda item: item[1], reverse=True)
+
+    best_model_name = sorted_results[0][0]
+    best_model_accuracy = sorted_results[0][1]
 
     table_header = "| Modelo | Accuracy (Precisión Final) |\n| :--- | :---: |\n"
     table_rows = ""
-    for name, acc in results.items():
-        table_rows += f"| {name} | {acc * 100:.2f}% |\n"
+    for name, acc in sorted_results:
+        if name == best_model_name:
+            table_rows += f"| **{name}** | **{acc * 100:.2f}%** |\n"
+        else:
+            table_rows += f"| {name} | {acc * 100:.2f}% |\n"
 
-    champion_line = f"> El modelo **{best_model_name} optimizado** es el campeón indiscutible de este análisis, logrando la mayor precisión con un **{best_model_accuracy * 100:.2f}%**."
+    champion_line = f"> El modelo **{best_model_name} optimizado** es el campeón indiscutible de este análisis, logrando la mayor precisión."
 
     summary = f"## Resumen de Rendimiento de Modelos de Clasificación\n\n{table_header}{table_rows}\n---\n\n{champion_line}"
 
