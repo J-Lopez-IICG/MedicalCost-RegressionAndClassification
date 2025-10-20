@@ -24,60 +24,60 @@ primary_medical_data:
 # ----------------------------------------------------------------------------------
 reg_model_lr:
   type: pickle.PickleDataset
-  filepath: data/06_models/linear_regression_model.pkl
+  filepath: data/06_models/regression/linear_regression_model.pkl
 
 reg_model_rf:
   type: pickle.PickleDataset
-  filepath: data/06_models/random_forest_regressor_model.pkl
+  filepath: data/06_models/regression/random_forest_regressor_model.pkl
 
 reg_model_xgb:
   type: pickle.PickleDataset
-  filepath: data/06_models/xgboost_regressor_model.pkl
+  filepath: data/06_models/regression/xgboost_regressor_model.pkl
 
-# --- Datasets intermedios (en memoria) ---
+# --- Modelos del pipeline 'model_classification' ---
 
 log_reg_model:
   type: pickle.PickleDataset
-  filepath: data/06_models/logistic_regression_model.pkl
+  filepath: data/06_models/classification/logistic_regression_model.pkl
 
 random_forest_model:
   type: pickle.PickleDataset
-  filepath: data/06_models/random_forest_model.pkl
+  filepath: data/06_models/classification/random_forest_model.pkl
 
 xgboost_model:
   type: pickle.PickleDataset
-  filepath: data/06_models/xgboost_model.pkl
+  filepath: data/06_models/classification/xgboost_model.pkl
 
 svc_model:
   type: pickle.PickleDataset
-  filepath: data/06_models/svc_model.pkl
+  filepath: data/06_models/classification/svc_model.pkl
 
 # ----------------------------------------------------------------------------------
 # 07_MODEL_OUTPUT: Métricas y resultados numéricos de los modelos.
 # ----------------------------------------------------------------------------------
 r2_score_lr:
   type: json.JSONDataset
-  filepath: data/07_model_output/r2_score_lr.json
+  filepath: data/07_model_output/regression/r2_score_lr.json
 
 metrics_lr:
   type: pandas.CSVDataset
-  filepath: data/07_model_output/metrics_lr.csv
+  filepath: data/07_model_output/regression/metrics_lr.csv
 
 r2_score_rf:
   type: json.JSONDataset
-  filepath: data/07_model_output/r2_score_rf.json
+  filepath: data/07_model_output/regression/r2_score_rf.json
 
 metrics_rf:
   type: pandas.CSVDataset
-  filepath: data/07_model_output/metrics_rf.csv
+  filepath: data/07_model_output/regression/metrics_rf.csv
 
 r2_score_xgb:
   type: json.JSONDataset
-  filepath: data/07_model_output/r2_score_xgb.json
+  filepath: data/07_model_output/regression/r2_score_xgb.json
 
 metrics_xgb:
   type: pandas.CSVDataset
-  filepath: data/07_model_output/metrics_xgb.csv
+  filepath: data/07_model_output/regression/metrics_xgb.csv
 
 classification_accuracy_log_reg:
   type: json.JSONDataset
