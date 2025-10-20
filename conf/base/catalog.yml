@@ -81,39 +81,39 @@ metrics_xgb:
 
 classification_accuracy_log_reg:
   type: json.JSONDataset
-  filepath: data/07_model_output/classification_accuracy_log_reg.json
+  filepath: data/07_model_output/classification/accuracy_log_reg.json
 
 classification_accuracy_rf:
   type: json.JSONDataset
-  filepath: data/07_model_output/classification_accuracy_rf.json
+  filepath: data/07_model_output/classification/accuracy_rf.json
 
 classification_accuracy_xgb:
   type: json.JSONDataset
-  filepath: data/07_model_output/classification_accuracy_xgb.json
+  filepath: data/07_model_output/classification/accuracy_xgb.json
 
 classification_accuracy_svc:
   type: json.JSONDataset
-  filepath: data/07_model_output/classification_accuracy_svc.json
+  filepath: data/07_model_output/classification/accuracy_svc.json
 
 classification_report_log_reg:
   type: text.TextDataset
-  filepath: data/07_model_output/classification_report_log_reg.txt
+  filepath: data/07_model_output/classification/report_log_reg.txt
 
 classification_report_rf:
   type: text.TextDataset
-  filepath: data/07_model_output/classification_report_rf.txt
+  filepath: data/07_model_output/classification/report_rf.txt
 
 classification_report_xgb:
   type: text.TextDataset
-  filepath: data/07_model_output/classification_report_xgb.txt
+  filepath: data/07_model_output/classification/report_xgb.txt
 
 classification_report_svc:
   type: text.TextDataset
-  filepath: data/07_model_output/classification_report_svc.txt
+  filepath: data/07_model_output/classification/report_svc.txt
 
 log_reg_feature_importance:
   type: pandas.CSVDataset
-  filepath: data/07_model_output/log_reg_feature_importance.csv
+  filepath: data/07_model_output/classification/feature_importance_log_reg.csv
 
 # ----------------------------------------------------------------------------------
 # 08_REPORTING: Gráficos y reportes de texto generados para el análisis.
@@ -194,22 +194,20 @@ plot_r2_comparison:
 # --- Gráficos del pipeline `model_classification` ---
 plot_log_reg_feature_importance:
   type: matplotlib.MatplotlibWriter
-  filepath: data/08_reporting/log_reg_feature_importance.png
+  filepath: data/08_reporting/classification/feature_importance_log_reg.png
 
 plot_rf_grid_search_heatmap:
   type: matplotlib.MatplotlibWriter
-  filepath: data/08_reporting/rf_grid_search_heatmap.png
+  filepath: data/08_reporting/classification/grid_search_heatmap_rf.png
 
 plot_xgb_grid_search_heatmap:
   type: matplotlib.MatplotlibWriter
-  filepath: data/08_reporting/xgb_grid_search_heatmap.png
+  filepath: data/08_reporting/classification/grid_search_heatmap_xgb.png
 
 plot_svc_grid_search_heatmap:
   type: matplotlib.MatplotlibWriter
-  filepath: data/08_reporting/svc_grid_search_heatmap.png
-
-# --- Reportes de texto ---
+  filepath: data/08_reporting/classification/grid_search_heatmap_svc.png
 
 classification_summary_output:
   type: text.TextDataset
-  filepath: data/08_reporting/classification_summary.txt
+  filepath: data/08_reporting/classification/summary.txt

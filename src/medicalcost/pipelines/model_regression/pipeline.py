@@ -51,13 +51,13 @@ def create_pipeline(**kwargs) -> Pipeline:
                 func=train_linear_regression,
                 inputs=["X_train", "y_train"],
                 outputs="reg_model_lr",
-                name="train_linear_regression_node",
+                name="reg_train_linear_regression_node",
             ),
             node(
                 func=predict,
                 inputs=["reg_model_lr", "X_test"],
-                outputs="y_pred_lr",
-                name="predict_lr_node",
+                outputs="reg_y_pred_lr",
+                name="reg_predict_lr_node",
             ),
             node(
                 func=evaluate_model,
@@ -66,7 +66,7 @@ def create_pipeline(**kwargs) -> Pipeline:
                     "X_train",
                     "y_train",
                     "y_test",
-                    "y_pred_lr",
+                    "reg_y_pred_lr",
                     "X_reference",
                 ],
                 outputs=[
@@ -74,7 +74,7 @@ def create_pipeline(**kwargs) -> Pipeline:
                     "metrics_lr",
                     "evaluation_output_lr",
                 ],
-                name="evaluate_lr_node",
+                name="reg_evaluate_lr_node",
             ),
         ]
     )
@@ -86,13 +86,13 @@ def create_pipeline(**kwargs) -> Pipeline:
                 func=train_random_forest,
                 inputs=["X_train", "y_train", "params:model_regression"],
                 outputs="reg_model_rf",
-                name="train_random_forest_node",
+                name="reg_train_random_forest_node",
             ),
             node(
                 func=predict,
                 inputs=["reg_model_rf", "X_test"],
-                outputs="y_pred_rf",
-                name="predict_rf_node",
+                outputs="reg_y_pred_rf",
+                name="reg_predict_rf_node",
             ),
             node(
                 func=evaluate_model,
@@ -101,11 +101,11 @@ def create_pipeline(**kwargs) -> Pipeline:
                     "X_train",
                     "y_train",
                     "y_test",
-                    "y_pred_rf",
+                    "reg_y_pred_rf",
                     "X_reference",
                 ],
                 outputs=["r2_score_rf", "metrics_rf", "evaluation_output_rf"],
-                name="evaluate_rf_node",
+                name="reg_evaluate_rf_node",
             ),
         ]
     )
@@ -117,13 +117,13 @@ def create_pipeline(**kwargs) -> Pipeline:
                 func=train_xgboost,
                 inputs=["X_train", "y_train", "params:model_regression"],
                 outputs="reg_model_xgb",
-                name="train_xgboost_node",
+                name="reg_train_xgboost_node",
             ),
             node(
                 func=predict,
                 inputs=["reg_model_xgb", "X_test"],
-                outputs="y_pred_xgb",
-                name="predict_xgb_node",
+                outputs="reg_y_pred_xgb",
+                name="reg_predict_xgb_node",
             ),
             node(
                 func=evaluate_model,
@@ -132,7 +132,7 @@ def create_pipeline(**kwargs) -> Pipeline:
                     "X_train",
                     "y_train",
                     "y_test",
-                    "y_pred_xgb",
+                    "reg_y_pred_xgb",
                     "X_reference",
                 ],
                 outputs=[
@@ -140,7 +140,7 @@ def create_pipeline(**kwargs) -> Pipeline:
                     "metrics_xgb",
                     "evaluation_output_xgb",
                 ],
-                name="evaluate_xgb_node",
+                name="reg_evaluate_xgb_node",
             ),
         ]
     )

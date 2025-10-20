@@ -57,6 +57,10 @@ model_classification:
       max_depth: [null, 10, 20] # 'null' en YAML se convierte en 'None' en Python.
       min_samples_split: [2, 5]
       min_samples_leaf: [1, 2]
+    heatmap_params:
+      x: "n_estimators"
+      y: "max_depth"
+      name: "Random Forest"
 
   # Parámetros para la búsqueda de hiperparámetros (GridSearch) de XGBoost.
   xgboost:
@@ -65,12 +69,20 @@ model_classification:
       max_depth: [3, 5, 7]
       learning_rate: [0.05, 0.1]
       subsample: [0.8, 1.0]
+    heatmap_params:
+      x: "n_estimators"
+      y: "learning_rate"
+      name: "XGBoost"
 
   # Parámetros para la búsqueda de hiperparámetros (GridSearch) de SVC.
   svc:
     param_grid:
-      C: [0.1, 1, 10]
-      gamma: ["scale", "auto", 0.1, 1]
+      svc__C: [0.1, 1, 10]
+      svc__gamma: ["scale", "auto", 0.1, 1]
+    heatmap_params:
+      x: "svc__gamma"
+      y: "svc__C"
+      name: "SVC"
 
   # Parámetros generales para GridSearchCV que se aplican a todos los modelos.
   grid_search:
