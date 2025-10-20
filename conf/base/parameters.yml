@@ -27,7 +27,7 @@ model_regression:
   random_forest_regressor:
     param_grid:
       n_estimators: [100, 200]
-      max_depth: [10, 20, None]
+      max_depth: [10, 20, null]
       min_samples_leaf: [1, 2, 4]
 
   # Parámetros para la búsqueda de hiperparámetros (GridSearch) de XGBoostRegressor.

@@ -74,9 +74,7 @@ def train_xgboost(
     """Entrena y optimiza un modelo XGBoost usando GridSearchCV."""
     cv_strategy = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
     grid_search_xgb = GridSearchCV(
-        estimator=XGBClassifier(
-            random_state=42, use_label_encoder=False, eval_metric="logloss"
-        ),
+        estimator=XGBClassifier(random_state=42, eval_metric="logloss"),
         param_grid=parameters["param_grid"],
         cv=cv_strategy,
         n_jobs=-1,
