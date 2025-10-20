@@ -8,6 +8,7 @@ from .nodes import (
     predict,
     evaluate_model,
     plot_feature_correlation_heatmap,
+    plot_r2_comparison,
 )
 
 
@@ -149,4 +150,14 @@ def create_pipeline(**kwargs) -> Pipeline:
         + linear_regression_pipeline
         + random_forest_pipeline
         + xgboost_pipeline
+        + pipeline(
+            [
+                node(
+                    func=plot_r2_comparison,
+                    inputs=["r2_score_lr", "r2_score_rf", "r2_score_xgb"],
+                    outputs="plot_r2_comparison",
+                    name="plot_r2_comparison_node",
+                )
+            ]
+        )
     )

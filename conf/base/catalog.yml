@@ -187,6 +187,10 @@ evaluation_output_xgb:
   type: text.TextDataset
   filepath: data/08_reporting/regression/evaluation_output_xgb.txt
 
+plot_r2_comparison:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/regression/r2_comparison_plot.png
+
 # --- Gráficos del pipeline `model_classification` ---
 plot_log_reg_feature_importance:
   type: matplotlib.MatplotlibWriter

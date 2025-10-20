@@ -198,3 +198,39 @@ def evaluate_model(
 # entre las características. El enfoque se centró en comparar un modelo lineal simple
 # con modelos de ensamblaje (Random Forest, XGBoost) capaces de capturar interacciones
 # complejas, lo cual resultó ser más beneficioso para mejorar la precisión.
+
+
+def plot_r2_comparison(r2_lr: dict, r2_rf: dict, r2_xgb: dict) -> Figure:
+    """Genera un gráfico de barras comparando el R-cuadrado de los modelos.
+
+    Args:
+        r2_lr: Diccionario con el R² del modelo de Regresión Lineal.
+        r2_rf: Diccionario con el R² del modelo de Random Forest.
+        r2_xgb: Diccionario con el R² del modelo de XGBoost.
+
+    Returns:
+        Una figura de Matplotlib con el gráfico de comparación.
+    """
+    scores = {
+        "Regresión Lineal": r2_lr["r2_score_test"],
+        "Random Forest": r2_rf["r2_score_test"],
+        "XGBoost": r2_xgb["r2_score_test"],
+    }
+    scores_df = pd.DataFrame(
+        list(scores.items()), columns=["Modelo", "R-cuadrado (Test)"]
+    )
+    scores_df = scores_df.sort_values(by="R-cuadrado (Test)", ascending=False)
+
+    fig, ax = plt.subplots(figsize=(10, 7))
+    bars = sns.barplot(x="Modelo", y="R-cuadrado (Test)", data=scores_df, ax=ax)
+    ax.set_title("Comparación de Precisión (R²) de Modelos de Regresión", fontsize=16)
+    ax.set_ylim(0, 1.0)
+
+    # Usar ax.bar_label para anotar las barras. Es más robusto y limpio.
+    ax.bar_label(
+        bars.containers[0], fmt="%.4f", fontsize=10, color="black"  # type: ignore
+    )
+
+    fig.tight_layout()
+    plt.close(fig)
+    return fig
