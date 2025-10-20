@@ -115,20 +115,21 @@ El objetivo aquí era responder: **¿Podemos predecir el costo exacto del seguro
 
     <img src="data/08_reporting/regression/feature_correlation_heatmap.png" alt="Correlación Final" width="700"/>
 
-2.  **Comparación de Modelos**: Se compararon tres modelos, y los resultados confirmaron que los modelos de ensamblaje (Random Forest y XGBoost) superaron con creces al modelo lineal simple.
+2.  **Comparación de Modelos**: Se compararon tres modelos, y los resultados, visibles en el gráfico `r2_comparison_plot.png`, confirmaron que los modelos de ensamblaje (Random Forest y XGBoost) superaron con creces al modelo lineal simple.
 
 <img src="data/08_reporting/regression/r2_comparison_plot.png" alt="R2 Comparison" width="700"/>
 
-3.  **El Campeón y su Veredicto**: El modelo **XGBoost Regressor** se coronó como el campeón, explicando un **90.25%** de la varianza en los costos. La importancia de sus características, extraída del reporte `evaluation_output_xgb.txt`, confirmó la hipótesis inicial de forma rotunda:
+3.  **El Campeón y su Veredicto**: El modelo **XGBoost Regressor** se coronó como el campeón, explicando un **90.12%** de la varianza en los costos (R²). La importancia de sus características, extraída del reporte `evaluation_output_xgb.txt`, confirmó la hipótesis inicial de forma rotunda:
 
 | Característica    | Importancia |
 | :---------------- | :---------- |
-| **smoker_yes**    | **0.8307**  |
-| bmi               | 0.0991      |
-| age               | 0.0440      |
-| ... (otras)       | < 0.011     |
+| **smoker_yes**    | **0.7996**  |
+| bmi               | 0.1026      |
+| age               | 0.0457      |
+| ... (otras)       | < 0.015     |
 
 > ✅ **Conclusión de Regresión**: Es posible predecir los costos con alta precisión (R² > 0.90), y ser fumador (`smoker_yes`) es, por un margen abrumador, el factor más determinante.
+> ✅ **Conclusión de Regresión**: Es posible predecir los costos con alta precisión (R² ≈ 0.90), y ser fumador (`smoker_yes`) es, por un margen abrumador, el factor más determinante.
 
 ### Acto 3: Clasificación del Riesgo de Costo (Clasificación)
 
@@ -138,7 +139,7 @@ Finalmente, se buscó responder: **¿Podemos clasificar a los pacientes en categ
 
     <img src="data/08_reporting/classification/grid_search_heatmap_xgb.png" alt="GridSearch XGBoost" width="600"/>
 
-2.  **Rendimiento Final**: El resumen de rendimiento, generado en `summary.txt`, muestra una clara victoria de los modelos de ensamblaje, superando la meta del 90% de precisión.
+2.  **Rendimiento Final**: El resumen de rendimiento, generado en el dataset `classification_summary_output`, muestra una clara victoria de los modelos de ensamblaje, superando la meta del 90% de precisión.
 
 | Modelo                          | Accuracy (Precisión Final) |
 | :------------------------------ | :------------------------: |
@@ -146,6 +147,8 @@ Finalmente, se buscó responder: **¿Podemos clasificar a los pacientes en categ
 | Random Forest                   |           94.78%           |
 | Support Vector Classifier (SVC) |           92.91%           |
 | Regresión Logística             |           90.67%           |
+
+> El modelo **RXGBoost** se corona como el campeón, logrando la mayor precisión en la clasificación de riesgo de costo. 🏆
 
 3.  **Capacidad de Discriminación (Curvas ROC)**: La comparación de las curvas ROC confirma visualmente el rendimiento superior. Los modelos de ensamblaje y SVC se agrupan en la esquina superior izquierda, con áreas bajo la curva (AUC) de 0.95 o más, lo que indica una capacidad de discriminación casi perfecta.
 
