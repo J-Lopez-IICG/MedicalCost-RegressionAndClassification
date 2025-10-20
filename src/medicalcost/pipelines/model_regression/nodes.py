@@ -1,13 +1,14 @@
+import logging
+
+import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-import matplotlib.pyplot as plt
+import xgboost as xgb
 from matplotlib.figure import Figure
-from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
-import logging
-import xgboost as xgb
 
 log = logging.getLogger(__name__)
 
@@ -33,7 +34,7 @@ def plot_feature_correlation_heatmap(featured_data: pd.DataFrame) -> Figure:
     return fig
 
 
-def _split_data(
+def split_data(
     primary_medical_data: pd.DataFrame,
     parameters: dict,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, pd.DataFrame]:
@@ -54,14 +55,14 @@ def _split_data(
     # Se elimina 'cost_category' porque es para clasificación, no para regresión.
     X = primary_medical_data.drop(["charges", "cost_category"], axis=1)
     y = primary_medical_data["charges"]
-    X_train, reg_X_test, y_train, reg_y_test = train_test_split(
+    X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
         test_size=parameters["test_size"],
         random_state=parameters["random_state"],
     )
 
-    return X_train, reg_X_test, y_train, reg_y_test, X
+    return X_train, X_test, y_train, y_test, X
 
 
 def train_linear_regression(
@@ -106,7 +107,7 @@ def predict(model, X_test: pd.DataFrame) -> pd.Series:
 
 def evaluate_model(
     model,
-    reg_y_test: pd.Series,
+    y_test: pd.Series,
     y_pred: pd.Series,
     X: pd.DataFrame,
 ) -> tuple[dict, pd.DataFrame, str]:
@@ -114,7 +115,7 @@ def evaluate_model(
 
     Args:
         model: El modelo de regresión entrenado.
-        reg_y_test: Variable objetivo real del conjunto de prueba.
+        y_test: Variable objetivo real del conjunto de prueba.
         y_pred: Predicciones del modelo.
         X: Todas las características, para referencia de columnas.
 
@@ -124,7 +125,7 @@ def evaluate_model(
         - metrics (DataFrame): DataFrame con coeficientes o importancia de características.
         - evaluation_output (str): Un texto formateado con el resumen de la evaluación.
     """
-    r2 = r2_score(reg_y_test, y_pred)
+    r2 = r2_score(y_test, y_pred)
     evaluation_output = f"Precisión del Modelo (R-cuadrado): {r2:.4f}\n\n"
 
     # Comprobar si el modelo tiene coeficientes (lineal) o importancia de características (árbol)
@@ -143,11 +144,10 @@ def evaluate_model(
     return {"r2_score": r2}, metrics, evaluation_output
 
 
-# Debido a que no existen problemas de multicolinealidad significativos en las características seleccionadas,
-# no se implementan técnicas adicionales de mitigación en este nodo.
-
-# Sin embargo, si se detectaran problemas de multicolinealidad en el futuro,
-# se podrían considerar las siguientes estrategias:
-# 1. Eliminación de características altamente correlacionadas.
-# 2. Aplicación de técnicas de reducción de dimensionalidad como PCA.
-# 3. Como no hay problemas graves de multicolinealidad, una de las principales motivaciones para usar modelos como Ridge o Lasso desaparece.
+# --- Nota sobre Modelos de Regresión Regularizada (Ridge, Lasso) ---
+#
+# No se implementaron modelos como Ridge o Lasso porque el análisis de correlación
+# (feature_correlation_heatmap.png) no mostró problemas graves de multicolinealidad
+# entre las características. El enfoque se centró en comparar un modelo lineal simple
+# con modelos de ensamblaje (Random Forest, XGBoost) capaces de capturar interacciones
+# complejas, lo cual resultó ser más beneficioso para mejorar la precisión.

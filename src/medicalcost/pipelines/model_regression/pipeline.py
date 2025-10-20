@@ -1,7 +1,7 @@
 from kedro.pipeline import Pipeline, node, pipeline
 
 from .nodes import (
-    _split_data,
+    split_data,
     train_linear_regression,
     train_random_forest,
     train_xgboost,
@@ -32,7 +32,7 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 # Divide los datos en conjuntos de entrenamiento y prueba.
-                func=_split_data,
+                func=split_data,
                 inputs={
                     "primary_medical_data": "primary_medical_data",
                     "parameters": "params:model_regression",
