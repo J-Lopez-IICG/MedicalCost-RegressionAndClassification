@@ -70,39 +70,42 @@ El preprocesamiento de datos es un pilar fundamental de este proyecto, automatiz
 
 ## 💡 Resultados: Una Historia en Tres Actos
 
-El pipeline generó una serie de reportes y visualizaciones que, en conjunto, nos permiten contar la historia de los datos y validar nuestras hipótesis.
+El pipeline generó una serie de reportes y visualizaciones que, en conjunto, nos permiten contar la historia de los datos y validar nuestras hipótesis. Cada artefacto es una pieza del rompecabezas.
 
 ### Acto 1: Exploración de los Datos
 
-El análisis exploratorio (EDA) fue fundamental para entender la naturaleza de los datos y formular nuestras hipótesis.
+El análisis exploratorio (EDA) fue fundamental para entender la naturaleza de los datos y formular nuestras hipótesis. Cada gráfico nos contó una parte de la historia.
 
-1.  **Perfil de la Población**: Primero, analizamos las distribuciones de las características demográficas. La edad presenta una distribución bastante uniforme, el IMC (`bmi`) sigue una curva normal, y la mayoría de los asegurados no tienen hijos.
+1.  **Perfil de la Población**: Primero, analizamos las distribuciones demográficas. La edad presenta una distribución bastante uniforme, el IMC (`bmi`) sigue una curva normal, y la mayoría de los asegurados tienen pocos o ningún hijo.
 
-    | Distribución de Edad                                                   | Distribución de IMC                                                  |
-    | :--------------------------------------------------------------------: | :------------------------------------------------------------------: |
-    | <img src="data/08_reporting/exploratory/plot_age_histogram.png" alt="Distribución de Edad" width="400"/> | <img src="data/08_reporting/exploratory/plot_bmi_histogram.png" alt="Distribución de IMC" width="400"/> |
+    | Distribución de Edad                                                   | Distribución de IMC                                                  | Distribución de Hijos                                                    |
+    | :--------------------------------------------------------------------: | :------------------------------------------------------------------: | :----------------------------------------------------------------------: |
+    | <img src="data/08_reporting/exploratory/plot_age_histogram.png" alt="Distribución de Edad" width="300"/> | <img src="data/08_reporting/exploratory/plot_bmi_histogram.png" alt="Distribución de IMC" width="300"/> | <img src="data/08_reporting/exploratory/plot_children_barplot.png" alt="Distribución de Hijos" width="300"/> |
 
-2.  **El Comportamiento de los Costos**: La variable objetivo, `charges`, muestra un fuerte sesgo positivo. La gran mayoría de los costos son bajos, pero existe una "larga cola" de costos muy elevados. Esto sugiere que ciertos factores pueden disparar los gastos de manera exponencial.
+2.  **El Comportamiento de los Costos (`charges`)**: La variable objetivo muestra un fuerte sesgo positivo. La gran mayoría de los costos son bajos, pero existe una "larga cola" de costos muy elevados, lo que sugiere que ciertos factores pueden disparar los gastos de manera exponencial.
 
     <img src="data/08_reporting/exploratory/plot_charges_histogram.png" alt="Distribución de Costos" width="700"/>
 
-3.  **El Factor Decisivo**: El primer hallazgo contundente fue la abismal diferencia en costos entre fumadores y no fumadores. Los fumadores no solo pagan primas significativamente más altas, sino que la dispersión de sus costos es inmensa, indicando un mayor riesgo y variabilidad.
+3.  **Búsqueda de Pistas: Correlaciones e Interacciones**:
+    *   **Correlaciones Numéricas**: El mapa de calor inicial mostró correlaciones positivas pero débiles de la edad y el IMC con los costos. Ninguna variable numérica por sí sola parecía ser un predictor dominante.
+    *   **El Factor Decisivo**: El gráfico de caja reveló la abismal diferencia en costos entre fumadores y no fumadores. Los fumadores no solo pagan más, sino que la variabilidad de sus costos es inmensa.
+    *   **La Interacción Clave**: El gráfico de dispersión confirmó nuestra hipótesis de interacción. Mientras que un IMC alto aumenta los costos para todos, este efecto se magnifica exponencialmente en individuos fumadores.
 
-    <img src="data/08_reporting/exploratory/smoker_vs_charges.png" alt="Smoker vs Charges" width="600"/>
+    | Correlación Numérica                                                      | Fumador vs. Costo                                                      | Interacción IMC-Fumador                                                      |
+    | :-----------------------------------------------------------------------: | :--------------------------------------------------------------------: | :--------------------------------------------------------------------------: |
+    | <img src="data/08_reporting/exploratory/correlation_heatmap.png" alt="Correlación Numérica" width="300"/> | <img src="data/08_reporting/exploratory/smoker_vs_charges.png" alt="Fumador vs Costo" width="300"/> | <img src="data/08_reporting/exploratory/bmi_smoker_interaction.png" alt="Interacción IMC-Fumador" width="300"/> |
 
-4.  **La Interacción Clave**: El análisis de interacciones demostró que, si bien un IMC alto aumenta los costos para todos, este efecto se magnifica exponencialmente en individuos fumadores. Para los no fumadores, el IMC tiene un impacto modesto; para los fumadores, un IMC alto dispara los costos. Esto confirmó que los modelos no lineales serían cruciales para capturar esta complejidad.
+4.  **Relaciones Lineales Débiles**: Los gráficos de regresión univariada confirmaron que, de forma aislada, variables como la edad, el IMC y el número de hijos tienen una correlación positiva pero débil con los costos (R² bajos). Esto reforzó la idea de que las interacciones son más importantes que los efectos individuales.
 
-    <img src="data/08_reporting/exploratory/bmi_smoker_interaction.png" alt="BMI Smoker Interaction" width="700"/>
+    | Edad vs. Costos                                                                 | IMC vs. Costos                                                                | Hijos vs. Costos                                                                  |
+    | :-----------------------------------------------------------------------------: | :---------------------------------------------------------------------------: | :-------------------------------------------------------------------------------: |
+    | <img src="data/08_reporting/exploratory/plot_age_vs_charges_regression.png" alt="Regresión Edad" width="300"/> | <img src="data/08_reporting/exploratory/plot_bmi_vs_charges_regression.png" alt="Regresión IMC" width="300"/> | <img src="data/08_reporting/exploratory/plot_children_vs_charges_regression.png" alt="Regresión Hijos" width="300"/> |
 
-5.  **Relaciones Lineales Débiles**: Los gráficos de regresión univariada mostraron que, de forma aislada, variables como la edad y el IMC tienen una correlación positiva pero débil con los costos (R² de 0.09 y 0.04 respectivamente). Esto refuerza la idea de que las interacciones entre variables son más importantes que los efectos individuales.
+5.  **Análisis de Outliers**: Los diagramas de caja revelaron la presencia de valores atípicos, especialmente en el IMC y los costos. Se decidió conservarlos, ya que representan escenarios reales y de alto impacto (ej. fumadores con obesidad) que son cruciales para que los modelos aprendan a predecir los casos más extremos.
 
-    | Regresión: Edad vs. Costos                                                    | Regresión: IMC vs. Costos                                                   |
-    | :---------------------------------------------------------------------------: | :-------------------------------------------------------------------------: |
-    | <img src="data/08_reporting/exploratory/plot_age_vs_charges_regression.png" alt="Regresión Edad" width="400"/> | <img src="data/08_reporting/exploratory/plot_bmi_vs_charges_regression.png" alt="Regresión IMC" width="400"/> |
-
-6.  **Análisis de Outliers**: Los diagramas de caja revelaron la presencia de valores atípicos, especialmente en el IMC y los costos. Sin embargo, se decidió conservarlos, ya que representan escenarios reales y de alto impacto (ej. fumadores con obesidad) que son cruciales para que los modelos aprendan a predecir los casos más extremos y costosos.
-
-    <img src="data/08_reporting/exploratory/plot_bmi_boxplot.png" alt="Boxplot IMC" width="300"/> <img src="data/08_reporting/exploratory/plot_charges_boxplot.png" alt="Boxplot Charges" width="300"/>
+    | Outliers en Edad                                                 | Outliers en IMC                                                | Outliers en Costos                                                   |
+    | :--------------------------------------------------------------: | :------------------------------------------------------------: | :------------------------------------------------------------------: |
+    | <img src="data/08_reporting/exploratory/plot_age_boxplot.png" alt="Boxplot Edad" width="300"/> | <img src="data/08_reporting/exploratory/plot_bmi_boxplot.png" alt="Boxplot IMC" width="300"/> | <img src="data/08_reporting/exploratory/plot_charges_boxplot.png" alt="Boxplot Charges" width="300"/> |
 
 ### Acto 2: Predicción del Costo Exacto (Regresión)
 
