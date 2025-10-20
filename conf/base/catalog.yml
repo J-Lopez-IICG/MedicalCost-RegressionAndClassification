@@ -159,6 +159,18 @@ plot_correlation_heatmap:
   type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/exploratory/correlation_heatmap.png
 
+plot_age_vs_charges_regression:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/age_vs_charges_regression.png
+
+plot_bmi_vs_charges_regression:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/bmi_vs_charges_regression.png
+
+plot_children_vs_charges_regression:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/exploratory/children_vs_charges_regression.png
+
 regression_feature_correlation_heatmap:
   type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/regression/feature_correlation_heatmap.png

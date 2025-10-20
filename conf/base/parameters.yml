@@ -8,6 +8,13 @@ data_engineering:
   temp_download_path: "data/temp_kaggle"
 
 # ----------------------------------------------------------------------------------
+# Pipeline: exploratory_data
+# ----------------------------------------------------------------------------------
+exploratory_data:
+  # Columnas para generar los gráficos de regresión univariada.
+  univariate_plot_columns: ["age", "bmi", "children"]
+
+# ----------------------------------------------------------------------------------
 # Pipeline: model_regression
 # ----------------------------------------------------------------------------------
 model_regression:

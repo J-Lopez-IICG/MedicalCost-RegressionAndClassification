@@ -199,3 +199,51 @@ def plot_numerical_boxplots(df_cleaned: pd.DataFrame) -> tuple[Figure, Figure, F
     plt.close(fig_charges_boxplot)
 
     return fig_age_boxplot, fig_bmi_boxplot, fig_charges_boxplot
+
+
+def plot_univariate_regressions(
+    df_cleaned: pd.DataFrame, parameters: dict
+) -> list[Figure]:
+    """Genera gráficos de regresión univariada separados para las columnas especificadas.
+
+    Args:
+        df_cleaned: Los datos limpios del seguro médico.
+        parameters: Diccionario que contiene `univariate_plot_columns`.
+
+    Returns:
+        Una lista de figuras de Matplotlib, una para cada columna.
+    """
+    plt.style.use("seaborn-v0_8-whitegrid")
+    columns_to_plot = parameters["univariate_plot_columns"]
+    figs = []
+
+    # Iterar sobre las columnas para crear una figura separada para cada una
+    for col in columns_to_plot:
+        X_col = df_cleaned[[col]]
+        y_col = df_cleaned["charges"]
+
+        model = LinearRegression()
+        model.fit(X_col, y_col)
+        r2_val = r2_score(y_col, model.predict(X_col))
+
+        fig, ax = plt.subplots(figsize=(10, 6))
+        sns.regplot(
+            x=col,
+            y="charges",
+            data=df_cleaned,
+            ax=ax,
+            seed=42,
+            line_kws={"color": "red"},
+        )
+        ax.set_title(
+            f"Regresión: Costos vs. {col.capitalize()} (R² = {r2_val:.2f})",
+            fontsize=14,
+            weight="bold",
+        )
+        ax.set_xlabel(col.capitalize())
+        ax.set_ylabel("Costo del Seguro (Charges)")
+        fig.tight_layout()
+        figs.append(fig)
+        plt.close(fig)
+
+    return figs

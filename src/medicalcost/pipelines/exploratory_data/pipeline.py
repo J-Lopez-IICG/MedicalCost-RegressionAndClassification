@@ -5,6 +5,7 @@ from .nodes import (
     plot_interactions_and_correlations,
     plot_numerical_distributions,
     plot_numerical_boxplots,
+    plot_univariate_regressions,
 )
 
 
@@ -60,6 +61,17 @@ def create_pipeline(**kwargs) -> Pipeline:
                     "plot_charges_boxplot",
                 ],
                 name="plot_numerical_boxplots_node",
+            ),
+            node(
+                # Genera gráficos de regresión univariada.
+                func=plot_univariate_regressions,
+                inputs=["processed_medical_data", "params:exploratory_data"],
+                outputs=[
+                    "plot_age_vs_charges_regression",
+                    "plot_bmi_vs_charges_regression",
+                    "plot_children_vs_charges_regression",
+                ],
+                name="plot_univariate_regressions_node",
             ),
         ]
     )
