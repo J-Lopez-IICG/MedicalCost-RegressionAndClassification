@@ -7,7 +7,7 @@ import xgboost as xgb
 from matplotlib.figure import Figure
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GridSearchCV, KFold, train_test_split
 from sklearn.metrics import r2_score
 
 log = logging.getLogger(__name__)
@@ -76,27 +76,55 @@ def train_linear_regression(
 
 def train_random_forest(
     X_train: pd.DataFrame, y_train: pd.Series, parameters: dict
-) -> RandomForestRegressor:
-    """Entrena un modelo de RandomForest Regressor."""
-    regressor = RandomForestRegressor(
-        n_estimators=100, random_state=parameters["random_state"], n_jobs=-1
+) -> GridSearchCV:
+    """Entrena y optimiza un modelo de RandomForest Regressor usando GridSearchCV."""
+    param_grid = parameters["random_forest_regressor"]["param_grid"]
+    base_regressor = RandomForestRegressor(
+        random_state=parameters["random_state"], n_jobs=-1
     )
-    regressor.fit(X_train, y_train)
-    return regressor
+
+    # KFold es más apropiado para regresión que StratifiedKFold
+    cv_strategy = KFold(
+        n_splits=5, shuffle=True, random_state=parameters["random_state"]
+    )
+
+    grid_search = GridSearchCV(
+        estimator=base_regressor,
+        param_grid=param_grid,
+        cv=cv_strategy,
+        n_jobs=-1,
+        verbose=1,
+    )
+    grid_search.fit(X_train, y_train)
+    log.info(f"Mejores parámetros para RandomForest: {grid_search.best_params_}")
+    return grid_search
 
 
 def train_xgboost(
     X_train: pd.DataFrame, y_train: pd.Series, parameters: dict
-) -> xgb.XGBRegressor:
-    """Entrena un modelo XGBoost Regressor."""
-    regressor = xgb.XGBRegressor(
+) -> GridSearchCV:
+    """Entrena y optimiza un modelo XGBoost Regressor usando GridSearchCV."""
+    param_grid = parameters["xgboost_regressor"]["param_grid"]
+    base_regressor = xgb.XGBRegressor(
         objective="reg:squarederror",
-        n_estimators=100,
         random_state=parameters["random_state"],
         n_jobs=-1,
     )
-    regressor.fit(X_train, y_train)
-    return regressor
+
+    cv_strategy = KFold(
+        n_splits=5, shuffle=True, random_state=parameters["random_state"]
+    )
+
+    grid_search = GridSearchCV(
+        estimator=base_regressor,
+        param_grid=param_grid,
+        cv=cv_strategy,
+        n_jobs=-1,
+        verbose=1,
+    )
+    grid_search.fit(X_train, y_train)
+    log.info(f"Mejores parámetros para XGBoost: {grid_search.best_params_}")
+    return grid_search
 
 
 def predict(model, X_test: pd.DataFrame) -> pd.Series:
@@ -107,6 +135,8 @@ def predict(model, X_test: pd.DataFrame) -> pd.Series:
 
 def evaluate_model(
     model,
+    X_train: pd.DataFrame,
+    y_train: pd.Series,
     y_test: pd.Series,
     y_pred: pd.Series,
     X: pd.DataFrame,
@@ -115,6 +145,8 @@ def evaluate_model(
 
     Args:
         model: El modelo de regresión entrenado.
+        X_train: Características de entrenamiento para evaluar el sobreajuste.
+        y_train: Variable objetivo de entrenamiento para evaluar el sobreajuste.
         y_test: Variable objetivo real del conjunto de prueba.
         y_pred: Predicciones del modelo.
         X: Todas las características, para referencia de columnas.
@@ -125,8 +157,19 @@ def evaluate_model(
         - metrics (DataFrame): DataFrame con coeficientes o importancia de características.
         - evaluation_output (str): Un texto formateado con el resumen de la evaluación.
     """
-    r2 = r2_score(y_test, y_pred)
-    evaluation_output = f"Precisión del Modelo (R-cuadrado): {r2:.4f}\n\n"
+    # Si el modelo es un objeto GridSearchCV, usamos el mejor estimador encontrado
+    if isinstance(model, GridSearchCV):
+        model = model.best_estimator_
+
+    r2_test = r2_score(y_test, y_pred)
+
+    # Calcular R-cuadrado en el conjunto de entrenamiento para detectar sobreajuste
+    y_pred_train = model.predict(X_train)
+    r2_train = r2_score(y_train, y_pred_train)
+    evaluation_output = f"Precisión del Modelo (R-cuadrado en Test): {r2_test:.4f}\n"
+    evaluation_output += (
+        f"Precisión del Modelo (R-cuadrado en Train): {r2_train:.4f}\n\n"
+    )
 
     # Comprobar si el modelo tiene coeficientes (lineal) o importancia de características (árbol)
     if hasattr(model, "coef_"):
@@ -141,7 +184,11 @@ def evaluate_model(
     metrics = metrics.sort_values(by=metrics.columns[0], ascending=False)
     evaluation_output += metrics.to_string()
 
-    return {"r2_score": r2}, metrics, evaluation_output
+    return (
+        {"r2_score_test": r2_test, "r2_score_train": r2_train},
+        metrics,
+        evaluation_output,
+    )
 
 
 # --- Nota sobre Modelos de Regresión Regularizada (Ridge, Lasso) ---

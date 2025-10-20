@@ -16,6 +16,21 @@ model_regression:
   # Semilla aleatoria para asegurar la reproducibilidad de la división de datos.
   random_state: 42
 
+  # Parámetros para la búsqueda de hiperparámetros (GridSearch) de RandomForestRegressor.
+  random_forest_regressor:
+    param_grid:
+      n_estimators: [100, 200]
+      max_depth: [10, 20, None]
+      min_samples_leaf: [1, 2, 4]
+
+  # Parámetros para la búsqueda de hiperparámetros (GridSearch) de XGBoostRegressor.
+  xgboost_regressor:
+    param_grid:
+      n_estimators: [100, 200]
+      max_depth: [3, 5, 7]
+      learning_rate: [0.05, 0.1]
+
+
 # ----------------------------------------------------------------------------------
 # Pipeline: model_classification
 # ----------------------------------------------------------------------------------

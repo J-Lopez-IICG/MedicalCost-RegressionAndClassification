@@ -60,7 +60,14 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=evaluate_model,
-                inputs=["reg_model_lr", "y_test", "y_pred_lr", "X_reference"],
+                inputs=[
+                    "reg_model_lr",
+                    "X_train",
+                    "y_train",
+                    "y_test",
+                    "y_pred_lr",
+                    "X_reference",
+                ],
                 outputs=[
                     "r2_score_lr",
                     "metrics_lr",
@@ -88,7 +95,14 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=evaluate_model,
-                inputs=["reg_model_rf", "y_test", "y_pred_rf", "X_reference"],
+                inputs=[
+                    "reg_model_rf",
+                    "X_train",
+                    "y_train",
+                    "y_test",
+                    "y_pred_rf",
+                    "X_reference",
+                ],
                 outputs=["r2_score_rf", "metrics_rf", "evaluation_output_rf"],
                 name="evaluate_rf_node",
             ),
@@ -112,7 +126,14 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=evaluate_model,
-                inputs=["reg_model_xgb", "y_test", "y_pred_xgb", "X_reference"],
+                inputs=[
+                    "reg_model_xgb",
+                    "X_train",
+                    "y_train",
+                    "y_test",
+                    "y_pred_xgb",
+                    "X_reference",
+                ],
                 outputs=[
                     "r2_score_xgb",
                     "metrics_xgb",

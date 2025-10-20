@@ -1,4 +1,5 @@
-Precisión del Modelo (R-cuadrado): 0.8069
+Precisión del Modelo (R-cuadrado en Test): 0.8069
+Precisión del Modelo (R-cuadrado en Train): 0.7299
 
 Impacto de cada variable en el costo (Coeficientes):
                    Coeficiente
