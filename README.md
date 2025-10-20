@@ -24,108 +24,113 @@ La hipótesis central es que las características demográficas y de salud de un
     *   **¿Qué tipo de modelo será más efectivo?** Dada la complejidad y las interacciones no lineales (como la de `smoker` y `bmi`), se hipotetiza que los modelos de ensamblaje (Random Forest, XGBoost) superarán en rendimiento a los modelos lineales (Regresión Logística) y a otros clasificadores como SVC.
 
 ---
-## Estructura del Proyecto
-<div>
+## 🏗️ Estructura del Proyecto
 
+El proyecto está organizado en una serie de pipelines modulares, cada uno con una responsabilidad específica, garantizando un flujo de trabajo claro y reproducible.
+
+```mermaid
+graph TD
+    A[1. data_engineering] --> B[2. data_processing];
+    B --> C[3. exploratory_data];
+    B --> D[4. feature_engineering];
+    D --> E[5. model_regression];
+    D --> F[6. model_classification];
 ```
+
+```text
 src/medicalcost/pipelines/
 ├── data_engineering/     # 1. 📥 Descarga y carga de datos crudos desde Kaggle.
-│
-├── data_processing/      # 2. 🧼 Limpieza, validación y conversión de tipos de datos.
-│
-├── model_regression/     # 3. 📈 Entrenamiento y evaluación del modelo de Regresión Lineal.
-│   │                     #    - Predice el costo exacto del seguro.
-│   │                     #    - Genera reportes y gráficos de regresión.
-│   └─ nodes.py
-│
-└── model_classification/ # 4. 📊 Entrenamiento y evaluación de modelos de Clasificación.
-    │                     #    - Predice si el costo será 'Alto' o 'Bajo'.
-    │                     #    - Compara Regresión Logística, SVC, XGBoost y Random Forest.
-    │                     #    - Optimiza hiperparámetros con GridSearchCV.
-    └─ nodes.py
+├── data_processing/      # 2. 🧼 Limpieza y validación de datos (nulos, duplicados).
+├── exploratory_data/     # 3. 🗺️ Generación de gráficos para el Análisis Exploratorio de Datos (EDA).
+├── feature_engineering/  # 4. 🛠️ Creación de características para modelado (One-Hot Encoding, etc.).
+├── model_regression/     # 5. 📈 Entrenamiento y evaluación de modelos de Regresión (Lineal, RF, XGBoost).
+└── model_classification/ # 6. 📊 Entrenamiento y evaluación de modelos de Clasificación (Log-Reg, SVC, RF, XGBoost).
 ```
 </div>
 
 ---
 
-## ⚙️ Preparación de Datos
+## ⚙️ Flujo de Preparación de Datos
 
-*   **Manejo de Datos Nulos**: El pipeline identifica y elimina sistemáticamente registros con valores faltantes para asegurar la calidad del dataset.
-*   **Codificación de Variables Categóricas**: Se transformaron variables como `sex`, `smoker` y `region` en formatos numéricos (One-Hot Encoding) para que los modelos pudieran procesarlas.
-*   **Creación de Variable Objetivo para Clasificación**: Se transformó la variable `charges` en una variable binaria `cost_category` ('Alto'/'Bajo') para el problema de clasificación, utilizando la mediana como umbral.
-*   **Automatización del Flujo de Datos**: Al encapsular todo el proceso en pipelines de Kedro, se garantiza que los datos para el modelado sean completamente automatizados y reproducibles.
+El preprocesamiento de datos es un pilar fundamental de este proyecto, automatizado a través de una secuencia de pipelines de Kedro para garantizar la consistencia y reproducibilidad. El flujo es el siguiente:
 
----
+1.  **Ingesta de Datos (`data_engineering`)**:
+    *   El pipeline se conecta a la API de Kaggle para descargar y cargar el dataset crudo, asegurando que siempre se trabaje con la fuente de datos original.
 
-## 💡 Resultados del Modelo
+2.  **Limpieza y Validación (`data_processing`)**:
+    *   **Manejo de Nulos y Duplicados**: Se eliminan sistemáticamente todas las filas que contienen valores nulos o que son duplicados exactos, garantizando la integridad del dataset.
+    *   **Conversión de Tipos**: Las columnas `sex`, `smoker` y `region` se convierten al tipo de dato `category` para optimizar el uso de memoria y prepararlas para la codificación.
 
-Esta sección presenta las conclusiones detalladas y los artefactos generados por los pipelines de Kedro, que encapsulan el proceso de modelado predictivo para la regresión de costos y la clasificación de categorías de costo. Hemos realizado un análisis comparativo exhaustivo de múltiples modelos, incluyendo un riguroso ajuste de hiperparámetros para los modelos de clasificación mediante **validación cruzada K-Fold (Stratified K-Fold)**.
-
-### Modelos de Regresión
-
-El modelo de Regresión Lineal Múltiple entrenado en el pipeline `model_regression` obtuvo un **R-cuadrado de 0.7836**.
-
-**Impacto de cada variable en el costo:**
-*   **`smoker_yes`**: Es, por un margen enorme, el factor más determinante. Aumenta el costo en **+$23,600**.
-*   **`age`** y **`bmi`**: Son los siguientes factores más importantes, aumentando el costo en **+$257** y **+$337** por cada unidad, respectivamente.
-*   **`children`**: También tiene un impacto positivo notable (+$474 por hijo).
-*   **`sex_male`** y la **`region`**: Tienen un impacto mucho menor y, en algunos casos, negativo.
-
-### Modelos de Clasificación: Random Forest es el Modelo con Mejor Rendimiento
-
-Tras el ajuste de hiperparámetros, el modelo **Random Forest** demostró ser el más efectivo para la clasificación de costos:
-
-| Modelo | Accuracy (Precisión Final) |
-| :--- | :---: |
-| Regresión Logística | 89.93% |
-| Support Vector Classifier (SVC) | 92.54% |
-| XGBoost | 92.91% |
-| **Random Forest** | **94.03%** |
-
-> 🏆 El modelo **Random Forest optimizado** es el campeón indiscutible de este análisis, logrando la mayor precisión.
----
-### 📊 Visualización de Resultados
-
-Los pipelines generan diversas visualizaciones para entender el comportamiento de los datos y el rendimiento de los modelos.
-
-**Gráficos de Regresión Univariada y Correlación:**
-*   **Regresión Lineal: Costos del Seguro vs. Edad**: Muestra una tendencia positiva, con datos agrupados en "bandas" (explicadas por el hábito de fumar).
-    ![Regresión Lineal: Costos del Seguro vs. Edad](data/08_reporting/age_vs_charges.png)
-    > A mayor edad, mayor es el costo del seguro. Sin embargo, el bajo R² (0.09) y las "bandas" visuales sugieren que la edad por sí sola no es un buen predictor y que otro factor (el hábito de fumar) está influyendo fuertemente.
-*   **Regresión Lineal: Costos del Seguro vs. IMC (BMI)**: Relación positiva más débil y dispersa.
-    ![Regresión Lineal: Costos del Seguro vs. IMC (BMI)](data/08_reporting/bmi_vs_charges.png)
-    > Existe una leve tendencia a que un mayor IMC se relacione con mayores costos, pero la relación es muy débil (R² de 0.04) y los datos están muy dispersos, indicando que el IMC por sí solo tiene un poder predictivo limitado.
-*   **Distribución de Costos para Fumadores vs. No Fumadores**: Revela una diferencia masiva en costos, siendo el hábito de fumar un factor clave.
-    ![Distribución de Costos para Fumadores vs. No Fumadores](data/08_reporting/smoker_vs_charges.png)
-    > Este es el hallazgo más contundente. Ser fumador dispara los costos del seguro de manera drástica. La mediana de costos para fumadores es significativamente más alta que incluso los costos más extremos de los no fumadores.
-*   **Interacción entre IMC, ser Fumador y Costos del Seguro**: Muestra cómo el IMC impacta drásticamente los costos para fumadores, un claro efecto de interacción.
-    ![Interacción entre IMC, ser Fumador y Costos del Seguro](data/08_reporting/bmi_smoker_interaction.png)
-    > El impacto del IMC en los costos depende críticamente de si la persona fuma. Para los no fumadores, el costo apenas aumenta con el IMC. Para los fumadores, un IMC más alto se correlaciona con un aumento exponencial en los costos, demostrando una fuerte interacción entre ambos factores.
-*   **Matriz de Correlación de Variables Numéricas**: Confirma las correlaciones entre `age`, `bmi` y `charges`.
-    ![Matriz de Correlación de Variables Numéricas](data/08_reporting/correlation_heatmap.png)
-    > La correlación más fuerte con los costos (`charges`) es la edad (`age`), aunque sigue siendo moderada (0.30). El IMC (`bmi`) tiene una correlación más débil (0.20). Esto refuerza que los modelos lineales simples con estas variables no serán suficientes.
-
-**Gráficos de Clasificación y Ajuste de Hiperparámetros:**
-*   **Importancia de las Características en el Modelo de Regresión Logística**: Muestra el impacto de cada variable en la clasificación.
-    ![Importancia de las Características en el Modelo de Regresión Logística](data/08_reporting/log_reg_feature_importance.png)
-    > Ser fumador (`smoker_yes`) es, con diferencia, el factor que más aumenta la probabilidad de pertenecer a la categoría de "Alto" costo. La edad y el IMC también contribuyen positivamente, mientras que ser hombre o pertenecer a ciertas regiones tiene un impacto negativo o menor.
-*   **Heatmap de Resultados de GridSearchCV para Random Forest**: Visualiza el impacto de los hiperparámetros en la precisión del modelo Random Forest.
-    ![Heatmap de Resultados de GridSearchCV para Random Forest (Accuracy Promedio)](data/08_reporting/rf_grid_search_heatmap.png)
-    > Este gráfico muestra cómo la combinación de hiperparámetros afecta la precisión del modelo. Permite identificar visualmente la configuración óptima (en este caso, la zona más clara) que maximiza el rendimiento, justificando la selección del mejor modelo.
-*   **Heatmap de Resultados de GridSearchCV para XGBoost**: Visualiza el impacto de los hiperparámetros en la precisión del modelo XGBoost.
-    ![Heatmap de Resultados de GridSearchCV para XGBoost (Accuracy Promedio)](data/08_reporting/xgb_grid_search_heatmap.png)
-    > Al igual que con Random Forest, este mapa de calor guía la optimización de XGBoost. Se puede observar cómo varían las precisiones al ajustar la tasa de aprendizaje y el número de estimadores, asegurando que se elija la combinación más potente.
-*   **Heatmap de Resultados de GridSearchCV para SVC**: Visualiza el impacto de los hiperparámetros en la precisión del modelo SVC.
-    ![Heatmap de Resultados de GridSearchCV para SVC (Accuracy Promedio)](data/08_reporting/svc_grid_search_heatmap.png)
-    > El rendimiento del modelo SVC es muy sensible a los parámetros `C` (regularización) y `gamma`. El mapa de calor revela qué combinaciones evitan el sobreajuste o el subajuste, llevando a la mejor precisión posible para este clasificador.
+3.  **Ingeniería de Características (`feature_engineering`)**:
+    *   **Creación de Variable Objetivo (Clasificación)**: Se crea la columna `cost_category` para los modelos de clasificación. Un paciente se etiqueta como `1` (Alto costo) si sus `charges` superan la mediana del dataset, y `0` (Bajo costo) en caso contrario.
+    *   **Codificación One-Hot**: Las variables categóricas (`sex`, `smoker`, `region`) se transforman en formato numérico usando One-Hot Encoding con `drop_first=True` para evitar multicolinealidad.
+    *   **Manejo de Outliers**: Se toma la decisión explícita de **no eliminar outliers**. Los valores extremos, especialmente en `charges` para fumadores con alto IMC, son considerados información predictiva crucial y no ruido.
 
 ---
 
-**En resumen:** El **Random Forest** es el modelo recomendado para la clasificación de costos médicos en este proyecto, debido a su consistente y superior rendimiento en términos de precisión después de un riguroso ajuste de hiperparámetros. El análisis de regresión también confirmó la importancia crítica de factores como el hábito de fumar, la edad y el IMC en la determinación de los costos.
+## 💡 Resultados: Una Historia en Tres Actos
+
+El pipeline generó una serie de reportes y visualizaciones que, en conjunto, cuentan la historia de los datos y el rendimiento de los modelos.
+
+### Acto 1: Exploración de los Datos
+
+El análisis exploratorio inicial (EDA) reveló patrones clave que sentaron las bases para las hipótesis del proyecto.
+
+1.  **Ser Fumador es el Factor Decisivo**: El primer hallazgo contundente fue la abismal diferencia en costos entre fumadores y no fumadores. Los fumadores no solo pagan más, sino que la variabilidad de sus costos es inmensa.
+
+    <img src="data/08_reporting/exploratory/smoker_vs_charges.png" alt="Smoker vs Charges" width="600"/>
+
+2.  **La Interacción Exponencial entre IMC y Fumar**: El análisis de interacciones demostró que, si bien un IMC alto aumenta los costos para todos, este efecto se magnifica exponencialmente en individuos fumadores. Esto sugiere que los modelos no lineales serían más efectivos.
+
+    <img src="data/08_reporting/exploratory/bmi_smoker_interaction.png" alt="BMI Smoker Interaction" width="700"/>
+
+### Acto 2: Predicción del Costo Exacto (Regresión)
+
+El objetivo aquí era responder: **¿Podemos predecir el costo exacto del seguro?** Se compararon tres modelos, y los resultados confirmaron que los modelos de ensamblaje superaron con creces al modelo lineal.
+
+<img src="data/08_reporting/regression/r2_comparison_plot.png" alt="R2 Comparison" width="700"/>
+
+El modelo **XGBoost Regressor** se coronó como el campeón, explicando un **90.25%** de la varianza en los costos del seguro en el conjunto de prueba.
+
+La importancia de las características del modelo ganador confirmó la hipótesis inicial de forma rotunda:
+
+| Característica    | Importancia |
+| :---------------- | :---------- |
+| **smoker_yes**    | **0.8307**  |
+| bmi               | 0.0991      |
+| age               | 0.0440      |
+| children          | 0.0108      |
+| sex_male          | 0.0047      |
+| region_southwest  | 0.0047      |
+| region_northwest  | 0.0036      |
+| region_southeast  | 0.0023      |
+
+> ✅ **Conclusión de Regresión**: Es posible predecir los costos con alta precisión (R² > 0.90), y ser fumador (`smoker_yes`) es, por un margen abrumador, el factor más determinante.
+
+### Acto 3: Clasificación del Riesgo de Costo (Clasificación)
+
+Finalmente, se buscó responder: **¿Podemos clasificar a los pacientes en categorías de 'Alto' o 'Bajo' costo?** Los resultados fueron excelentes, superando el 90% de precisión anticipado.
+
+A continuación se muestra el resumen de rendimiento de los modelos:
+
+| Modelo                          | Accuracy (Precisión Final) |
+| :------------------------------ | :------------------------: |
+| **XGBoost**                     |         **94.78%**         |
+| Random Forest                   |           94.78%           |
+| Support Vector Classifier (SVC) |           92.91%           |
+| Regresión Logística             |           90.67%           |
+
+Los modelos **XGBoost** y **Random Forest** demostraron un rendimiento prácticamente idéntico y superior, validando la hipótesis de que los modelos de ensamblaje serían los más efectivos.
+
+La comparación de las curvas ROC confirma visualmente el rendimiento superior de los modelos de ensamblaje, con áreas bajo la curva (AUC) de 0.99 para RF y 0.95 para XGBoost, indicando una capacidad de discriminación casi perfecta.
+
+<img src="data/08_reporting/classification/roc_curves_comparison.png" alt="ROC Curves" width="700"/>
+
+> ✅ **Conclusión de Clasificación**: Es posible clasificar a los pacientes por riesgo de costo con una precisión extremadamente alta (≈95%), y los modelos de ensamblaje son la mejor herramienta para esta tarea.
 
 ---
 
-## 🔑 Configuración de Kaggle
+## � Configuración de Kaggle
 
 Para poder ejecutar este pipeline, es necesario configurar las credenciales de la API de Kaggle.
 
