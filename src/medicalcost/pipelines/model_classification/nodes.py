@@ -4,7 +4,7 @@ import seaborn as sns
 from matplotlib.figure import Figure
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score, classification_report, roc_curve, auc
 from sklearn.model_selection import GridSearchCV, StratifiedKFold, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -130,13 +130,83 @@ def extract_and_plot_log_reg_importance(
     )
 
     fig, ax = plt.subplots(figsize=(10, 6))
-    sns.barplot(x="Coefficient", y="Feature", data=feature_importance, ax=ax)
-    ax.set_title("Importancia de Características - Regresión Logística")
+    # Dibujar las barras con cierta transparencia
+    sns.barplot(x="Coefficient", y="Feature", data=feature_importance, ax=ax, alpha=0.6)
+
+    # Añadir una línea que conecte los puntos máximos de las barras
+    ax.plot(
+        feature_importance["Coefficient"],
+        feature_importance["Feature"],
+        marker="o",
+        linestyle="-",
+        color="darkred",
+    )
+
+    ax.set_title("Impacto de Características en la Clasificación de Costo")
     ax.set_xlabel('Coeficiente (Impacto en la probabilidad de ser "Alto Costo")')
     ax.set_ylabel("Característica")
+    ax.axvline(0, color="black", lw=0.5)
     fig.tight_layout()
     plt.close(fig)
     return feature_importance, fig
+
+
+def plot_roc_curves_comparison(
+    log_reg_model,
+    random_forest_model,
+    xgboost_model,
+    svc_model,
+    X_test: pd.DataFrame,
+    y_test: pd.Series,
+) -> Figure:
+    """
+    Genera y compara las curvas ROC para múltiples modelos de clasificación.
+
+    Args:
+        log_reg_model: Modelo de Regresión Logística entrenado.
+        random_forest_model: Modelo de Random Forest entrenado.
+        xgboost_model: Modelo de XGBoost entrenado.
+        svc_model: Modelo de SVC entrenado.
+        X_test: Características del conjunto de prueba.
+        y_test: Variable objetivo real del conjunto de prueba.
+
+    Returns:
+        Una figura de Matplotlib con las curvas ROC superpuestas.
+    """
+    fig, ax = plt.subplots(figsize=(10, 8))
+
+    models = {
+        "Regresión Logística": log_reg_model,
+        "Random Forest": random_forest_model,
+        "XGBoost": xgboost_model,
+        "SVC": svc_model,
+    }
+
+    for name, model in models.items():
+        # Para GridSearchCV, primero obtenemos el mejor estimador
+        if isinstance(model, GridSearchCV):
+            model = model.best_estimator_
+
+        # Obtener las probabilidades de la clase positiva
+        y_pred_proba = model.predict_proba(X_test)[:, 1]
+
+        # Calcular la curva ROC y el área bajo la curva (AUC)
+        fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
+        roc_auc = auc(fpr, tpr)
+
+        # Dibujar la curva
+        ax.plot(fpr, tpr, label=f"{name} (AUC = {roc_auc:.2f})")
+
+    # Dibujar la línea de referencia (azar)
+    ax.plot([0, 1], [0, 1], "k--", label="Azar (AUC = 0.50)")
+
+    ax.set_title("Comparación de Curvas ROC para Modelos de Clasificación", fontsize=16)
+    ax.set_xlabel("Tasa de Falsos Positivos (1 - Especificidad)")
+    ax.set_ylabel("Tasa de Verdaderos Positivos (Sensibilidad)")
+    ax.legend(loc="lower right")
+    fig.tight_layout()
+    plt.close(fig)
+    return fig
 
 
 def plot_grid_search_heatmap(

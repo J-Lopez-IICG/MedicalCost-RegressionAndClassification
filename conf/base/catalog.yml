@@ -208,6 +208,10 @@ plot_svc_grid_search_heatmap:
   type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/classification/grid_search_heatmap_svc.png
 
+plot_roc_curves_comparison:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/classification/roc_curves_comparison.png
+
 classification_summary_output:
   type: text.TextDataset
   filepath: data/08_reporting/classification/summary.txt

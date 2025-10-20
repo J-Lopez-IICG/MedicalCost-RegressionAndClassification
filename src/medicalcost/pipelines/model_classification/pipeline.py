@@ -10,6 +10,7 @@ from .nodes import (
     evaluate_classifier,
     extract_and_plot_log_reg_importance,
     plot_grid_search_heatmap,
+    plot_roc_curves_comparison,
     create_classification_summary,
 )
 
@@ -200,6 +201,19 @@ def create_pipeline(**kwargs) -> Pipeline:
                 ],
                 outputs="classification_summary_output",
                 name="create_classification_summary_node",
+            ),
+            node(
+                func=plot_roc_curves_comparison,
+                inputs={
+                    "log_reg_model": "log_reg_model",
+                    "random_forest_model": "random_forest_model",
+                    "xgboost_model": "xgboost_model",
+                    "svc_model": "svc_model",
+                    "X_test": "cls_X_test",
+                    "y_test": "cls_y_test",
+                },
+                outputs="plot_roc_curves_comparison",
+                name="plot_roc_curves_comparison_node",
             ),
         ]
     )
