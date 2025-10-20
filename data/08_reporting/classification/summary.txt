@@ -2,11 +2,11 @@
 
 | Modelo | Accuracy (Precisión Final) |
 | :--- | :---: |
-| Regresión Logística | 90.67% |
-| Support Vector Classifier (SVC) | 92.91% |
-| XGBoost | 94.78% |
+| **XGBoost** | **94.78%** |
 | Random Forest | 94.78% |
+| Support Vector Classifier (SVC) | 92.91% |
+| Regresión Logística | 90.67% |
 
 ---
 
-> El modelo **XGBoost optimizado** es el campeón indiscutible de este análisis, logrando la mayor precisión con un **94.78%**.
+> El modelo **XGBoost optimizado** es el campeón indiscutible de este análisis, logrando la mayor precisión.

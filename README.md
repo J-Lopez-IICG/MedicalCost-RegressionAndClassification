@@ -10,9 +10,18 @@ El objetivo es demostrar un flujo de trabajo de Machine Learning estructurado y 
 
 ---
 
-## Hipótesis
+## 🎯 Hipótesis
 
-La hipótesis central de este análisis es que **factores demográficos y de salud pueden ser utilizados para predecir los costos de seguros médicos y clasificar a los pacientes por riesgo de costo**. Se espera que, mediante algoritmos de regresión y clasificación, se puedan construir modelos capaces de estimar los costos y distinguir con alta precisión entre pacientes de "alto" y "bajo" costo, basándose en características como la edad, el IMC, el hábito de fumar, etc.
+La hipótesis central es que las características demográficas y de salud de un individuo no solo permiten predecir sus costos médicos, sino también clasificarlo en un grupo de riesgo con alta precisión. Para validar esto, se plantearon las siguientes sub-hipótesis:
+
+1.  **Hipótesis de Regresión (Predicción de Costo):**
+    *   **¿Es posible predecir el costo exacto del seguro (`charges`)?** Se postula que un modelo de regresión podrá explicar una porción significativa de la varianza en los costos (R² > 0.75).
+    *   **¿Cuál es el factor más influyente?** Se hipotetiza que ser fumador (`smoker`) será, por un amplio margen, el predictor más determinante del costo, superando a la edad y al IMC.
+    *   **¿Existen efectos de interacción?** Se espera encontrar una fuerte interacción entre ser fumador y el IMC, donde el impacto del IMC en los costos se magnifica exponencialmente en individuos fumadores.
+
+2.  **Hipótesis de Clasificación (Categorización de Riesgo):**
+    *   **¿Se puede clasificar a los pacientes en categorías de costo 'Alto' o 'Bajo' con alta precisión?** Se anticipa que los modelos de clasificación alcanzarán una precisión superior al 90%.
+    *   **¿Qué tipo de modelo será más efectivo?** Dada la complejidad y las interacciones no lineales (como la de `smoker` y `bmi`), se hipotetiza que los modelos de ensamblaje (Random Forest, XGBoost) superarán en rendimiento a los modelos lineales (Regresión Logística) y a otros clasificadores como SVC.
 
 ---
 ## Estructura del Proyecto
