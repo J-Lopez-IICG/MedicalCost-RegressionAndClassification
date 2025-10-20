@@ -22,9 +22,19 @@ primary_medical_data:
 # ----------------------------------------------------------------------------------
 # 06_MODELS: Modelos serializados guardados por los pipelines de modelado.
 # ----------------------------------------------------------------------------------
-reg_model:
+reg_model_lr:
   type: pickle.PickleDataset
   filepath: data/06_models/linear_regression_model.pkl
+
+reg_model_rf:
+  type: pickle.PickleDataset
+  filepath: data/06_models/random_forest_regressor_model.pkl
+
+reg_model_xgb:
+  type: pickle.PickleDataset
+  filepath: data/06_models/xgboost_regressor_model.pkl
+
+# --- Datasets intermedios (en memoria) ---
 
 log_reg_model:
   type: pickle.PickleDataset
@@ -45,13 +55,29 @@ svc_model:
 # ----------------------------------------------------------------------------------
 # 07_MODEL_OUTPUT: Métricas y resultados numéricos de los modelos.
 # ----------------------------------------------------------------------------------
-r2_score_output:
+r2_score_lr:
   type: json.JSONDataset
-  filepath: data/07_model_output/r2_score.json
+  filepath: data/07_model_output/r2_score_lr.json
 
-model_coefficients:
+metrics_lr:
   type: pandas.CSVDataset
-  filepath: data/07_model_output/model_coefficients.csv
+  filepath: data/07_model_output/metrics_lr.csv
+
+r2_score_rf:
+  type: json.JSONDataset
+  filepath: data/07_model_output/r2_score_rf.json
+
+metrics_rf:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/metrics_rf.csv
+
+r2_score_xgb:
+  type: json.JSONDataset
+  filepath: data/07_model_output/r2_score_xgb.json
+
+metrics_xgb:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/metrics_xgb.csv
 
 classification_accuracy_log_reg:
   type: json.JSONDataset
@@ -133,26 +159,21 @@ plot_correlation_heatmap:
   type: matplotlib.MatplotlibWriter
   filepath: data/08_reporting/exploratory/correlation_heatmap.png
 
-# --- Gráficos del pipeline `model_regression` ---
-plot_age_vs_charges:
+regression_feature_correlation_heatmap:
   type: matplotlib.MatplotlibWriter
-  filepath: data/08_reporting/regression/age_vs_charges.png
+  filepath: data/08_reporting/regression/feature_correlation_heatmap.png
 
-plot_bmi_vs_charges:
-  type: matplotlib.MatplotlibWriter
-  filepath: data/08_reporting/regression/bmi_vs_charges.png
-
-plot_children_vs_charges:
-  type: matplotlib.MatplotlibWriter
-  filepath: data/08_reporting/regression/children_vs_charges.png
-
-univariate_regression_output:
+evaluation_output_lr:
   type: text.TextDataset
-  filepath: data/08_reporting/regression/univariate_regression_output.txt
+  filepath: data/08_reporting/regression/evaluation_output_lr.txt
 
-model_evaluation_output:
+evaluation_output_rf:
   type: text.TextDataset
-  filepath: data/08_reporting/regression/model_evaluation_output.txt
+  filepath: data/08_reporting/regression/evaluation_output_rf.txt
+
+evaluation_output_xgb:
+  type: text.TextDataset
+  filepath: data/08_reporting/regression/evaluation_output_xgb.txt
 
 # --- Gráficos del pipeline `model_classification` ---
 plot_log_reg_feature_importance:

@@ -1,5 +1,0 @@
---- Análisis de Regresión Univariada ---
-
-Ecuación (Age): charges = 257.23 * age + 3190.02
-Ecuación (Bmi): charges = 393.86 * bmi + 1202.14
-Ecuación (Children): charges = 676.95 * children + 12537.36

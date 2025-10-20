@@ -2,74 +2,42 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, Ridge
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 import logging
+import xgboost as xgb
 
 log = logging.getLogger(__name__)
 
 
-def create_univariate_regression_plots(
-    df_cleaned: pd.DataFrame, parameters: dict
-) -> list:
-    """Genera gráficos de regresión univariada separados para las columnas especificadas.
+def plot_feature_correlation_heatmap(featured_data: pd.DataFrame) -> Figure:
+    """Genera un mapa de calor de la correlación de las características finales.
 
     Args:
-        df_cleaned: Los datos limpios del seguro médico para la regresión.
-        parameters: Diccionario que contiene `univariate_plot_columns`.
+        featured_data: El DataFrame con todas las características listas para el modelo.
 
     Returns:
-        A tuple containing:
-            - Una lista de figuras de Matplotlib, seguida de un string con el resumen.
+        Una figura de Matplotlib con el mapa de calor.
     """
     plt.style.use("seaborn-v0_8-whitegrid")
-    columns_to_plot = parameters["univariate_plot_columns"]
-    figs = []
-    univariate_output = "--- Análisis de Regresión Univariada ---\n\n"
-
-    # Iterar sobre las columnas para crear una figura separada para cada una
-    for col in columns_to_plot:
-        X_col = df_cleaned[[col]]
-        y_col = df_cleaned["charges"]
-
-        model = LinearRegression()
-        model.fit(X_col, y_col)
-        r2_val = r2_score(y_col, model.predict(X_col))
-
-        fig, ax = plt.subplots(figsize=(10, 6))
-        sns.regplot(
-            x=col,
-            y="charges",
-            data=df_cleaned,
-            ax=ax,
-            seed=42,
-            line_kws={"color": "red"},
-        )
-        ax.set_title(
-            f"Costos vs. {col.capitalize()} (R² = {r2_val:.2f})",
-            fontsize=14,
-            weight="bold",
-        )
-        ax.set_xlabel(col.capitalize())
-        ax.set_ylabel("Costo del Seguro (Charges)")
-        ax.grid(True, which="both", linestyle="--", linewidth=0.5)
-        fig.tight_layout()
-        figs.append(fig)
-        plt.close(fig)
-
-        # Añadir la ecuación al reporte de texto
-        univariate_output += f"Ecuación ({col.capitalize()}): charges = {model.coef_[0]:.2f} * {col} + {model.intercept_:.2f}\n"
-
-    # Devuelve la lista de figuras desempaquetada y el texto
-    return [*figs, univariate_output]
+    fig, ax = plt.subplots(figsize=(15, 12))
+    corr_matrix = featured_data.drop("cost_category", axis=1).corr()
+    sns.heatmap(
+        corr_matrix, annot=True, cmap="coolwarm", fmt=".2f", linewidths=0.5, ax=ax
+    )
+    ax.set_title("Matriz de Correlación de Características para Modelado", fontsize=16)
+    fig.tight_layout()
+    plt.close(fig)
+    return fig
 
 
-def train_model(
+def _split_data(
     primary_medical_data: pd.DataFrame,
     parameters: dict,
-) -> tuple[LinearRegression, pd.DataFrame, pd.Series, pd.Series, pd.DataFrame]:
-    """Divide los datos y entrena un modelo de regresión lineal.
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, pd.DataFrame]:
+    """Divide los datos en conjuntos de entrenamiento y prueba.
 
     Args:
         primary_medical_data: El DataFrame preprocesado del pipeline de `feature_engineering`.
@@ -77,11 +45,11 @@ def train_model(
 
     Returns:
         A tuple containing:
-        - El modelo de regresión lineal entrenado.
-        - reg_X_test (DataFrame): Características del conjunto de prueba.
-        - reg_y_test (Series): Variable objetivo real del conjunto de prueba.
-        - y_pred (Series): Predicciones sobre el conjunto de prueba.
-        - X (DataFrame): Todas las características, para referencia de columnas.
+        - X_train: Características de entrenamiento.
+        - X_test: Características de prueba.
+        - y_train: Variable objetivo de entrenamiento.
+        - y_test: Variable objetivo de prueba.
+        - X: Todas las características para referencia.
     """
     # Se elimina 'cost_category' porque es para clasificación, no para regresión.
     X = primary_medical_data.drop(["charges", "cost_category"], axis=1)
@@ -93,46 +61,93 @@ def train_model(
         random_state=parameters["random_state"],
     )
 
+    return X_train, reg_X_test, y_train, reg_y_test, X
+
+
+def train_linear_regression(
+    X_train: pd.DataFrame, y_train: pd.Series
+) -> LinearRegression:
+    """Entrena un modelo de Regresión Lineal."""
     multi_model = LinearRegression()
     multi_model.fit(X_train, y_train)
-    y_pred = multi_model.predict(reg_X_test)
+    return multi_model
 
-    return (
-        multi_model,
-        reg_X_test,
-        reg_y_test,
-        pd.Series(y_pred, index=reg_X_test.index),
-        X,
+
+def train_random_forest(
+    X_train: pd.DataFrame, y_train: pd.Series, parameters: dict
+) -> RandomForestRegressor:
+    """Entrena un modelo de RandomForest Regressor."""
+    regressor = RandomForestRegressor(
+        n_estimators=100, random_state=parameters["random_state"], n_jobs=-1
     )
+    regressor.fit(X_train, y_train)
+    return regressor
+
+
+def train_xgboost(
+    X_train: pd.DataFrame, y_train: pd.Series, parameters: dict
+) -> xgb.XGBRegressor:
+    """Entrena un modelo XGBoost Regressor."""
+    regressor = xgb.XGBRegressor(
+        objective="reg:squarederror",
+        n_estimators=100,
+        random_state=parameters["random_state"],
+        n_jobs=-1,
+    )
+    regressor.fit(X_train, y_train)
+    return regressor
+
+
+def predict(model, X_test: pd.DataFrame) -> pd.Series:
+    """Realiza predicciones sobre el conjunto de prueba."""
+    y_pred = model.predict(X_test)
+    return pd.Series(y_pred, index=X_test.index)
 
 
 def evaluate_model(
-    multi_model: LinearRegression,
-    reg_X_test: pd.DataFrame,
+    model,
     reg_y_test: pd.Series,
     y_pred: pd.Series,
     X: pd.DataFrame,
-) -> tuple[float, pd.DataFrame, str]:
-    """Evalúa el modelo y genera métricas de rendimiento.
+) -> tuple[dict, pd.DataFrame, str]:
+    """Evalúa un modelo de regresión y genera métricas de rendimiento.
 
     Args:
-        multi_model: El modelo de regresión lineal entrenado.
-        reg_X_test: Características del conjunto de prueba.
+        model: El modelo de regresión entrenado.
         reg_y_test: Variable objetivo real del conjunto de prueba.
         y_pred: Predicciones del modelo.
         X: Todas las características, para referencia de columnas.
 
     Returns:
         A tuple containing:
-        - r2 (float): La puntuación R-cuadrado del modelo.
-        - coeffs (DataFrame): DataFrame con los coeficientes del modelo.
+        - score (dict): Diccionario con la puntuación R-cuadrado.
+        - metrics (DataFrame): DataFrame con coeficientes o importancia de características.
         - evaluation_output (str): Un texto formateado con el resumen de la evaluación.
     """
     r2 = r2_score(reg_y_test, y_pred)
-    coeffs = pd.DataFrame(multi_model.coef_, X.columns, columns=["Coeficiente"])
-
     evaluation_output = f"Precisión del Modelo (R-cuadrado): {r2:.4f}\n\n"
-    evaluation_output += "Impacto de cada variable en el costo:\n"
-    evaluation_output += coeffs.to_string()
 
-    return r2, coeffs, evaluation_output
+    # Comprobar si el modelo tiene coeficientes (lineal) o importancia de características (árbol)
+    if hasattr(model, "coef_"):
+        metrics = pd.DataFrame(model.coef_, X.columns, columns=["Coeficiente"])
+        evaluation_output += "Impacto de cada variable en el costo (Coeficientes):\n"
+    elif hasattr(model, "feature_importances_"):
+        metrics = pd.DataFrame(
+            model.feature_importances_, X.columns, columns=["Importancia"]
+        )
+        evaluation_output += "Importancia de cada variable en la predicción:\n"
+
+    metrics = metrics.sort_values(by=metrics.columns[0], ascending=False)
+    evaluation_output += metrics.to_string()
+
+    return {"r2_score": r2}, metrics, evaluation_output
+
+
+# Debido a que no existen problemas de multicolinealidad significativos en las características seleccionadas,
+# no se implementan técnicas adicionales de mitigación en este nodo.
+
+# Sin embargo, si se detectaran problemas de multicolinealidad en el futuro,
+# se podrían considerar las siguientes estrategias:
+# 1. Eliminación de características altamente correlacionadas.
+# 2. Aplicación de técnicas de reducción de dimensionalidad como PCA.
+# 3. Como no hay problemas graves de multicolinealidad, una de las principales motivaciones para usar modelos como Ridge o Lasso desaparece.

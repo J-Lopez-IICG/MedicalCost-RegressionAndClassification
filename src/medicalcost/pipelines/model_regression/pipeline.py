@@ -1,53 +1,131 @@
 from kedro.pipeline import Pipeline, node, pipeline
 
-from .nodes import create_univariate_regression_plots, train_model, evaluate_model
+from .nodes import (
+    _split_data,
+    train_linear_regression,
+    train_random_forest,
+    train_xgboost,
+    predict,
+    evaluate_model,
+    plot_feature_correlation_heatmap,
+)
 
 
 def create_pipeline(**kwargs) -> Pipeline:
     """
-    Crea el pipeline de regresión.
+    Crea el pipeline de regresión para entrenar y comparar múltiples modelos.
 
-    Este pipeline toma los datos preparados, entrena un modelo de regresión lineal
-    para predecir los costos del seguro, y luego lo evalúa para generar
-    métricas de rendimiento.
+    Este pipeline toma los datos preparados, entrena modelos de Regresión Lineal,
+    Random Forest y XGBoost, y luego los evalúa para generar métricas de rendimiento.
 
     Returns:
         Un objeto Pipeline que define el flujo de trabajo de regresión.
     """
-    return pipeline(
+    data_preparation_pipeline = pipeline(
         [
             node(
-                # Genera gráficos de regresión simple para 'age' y 'bmi' vs 'charges'.
-                func=create_univariate_regression_plots,
-                inputs=["processed_medical_data", "params:model_regression"],
-                outputs=[
-                    "plot_age_vs_charges",
-                    "plot_bmi_vs_charges",
-                    "plot_children_vs_charges",
-                    "univariate_regression_output",
-                ],
-                name="create_univariate_regression_plots_node",
+                # Genera un mapa de calor de correlación para las características finales.
+                func=plot_feature_correlation_heatmap,
+                inputs="primary_medical_data",
+                outputs="regression_feature_correlation_heatmap",
+                name="plot_regression_feature_correlation_node",
             ),
             node(
-                # Divide los datos y entrena el modelo de regresión lineal.
-                func=train_model,
+                # Divide los datos en conjuntos de entrenamiento y prueba.
+                func=_split_data,
                 inputs={
                     "primary_medical_data": "primary_medical_data",
                     "parameters": "params:model_regression",
                 },
-                outputs=["reg_model", "reg_X_test", "reg_y_test", "y_pred", "X"],
-                name="train_linear_regression_model_node",
-            ),
-            node(
-                # Evalúa el modelo calculando R-cuadrado y extrayendo coeficientes.
-                func=evaluate_model,
-                inputs=["reg_model", "reg_X_test", "reg_y_test", "y_pred", "X"],
-                outputs=[
-                    "r2_score_output",
-                    "model_coefficients",
-                    "model_evaluation_output",
-                ],
-                name="evaluate_model_node",
+                outputs=["X_train", "X_test", "y_train", "y_test", "X_reference"],
+                name="split_data_node",
             ),
         ]
+    )
+
+    # --- Pipeline para Regresión Lineal ---
+    linear_regression_pipeline = pipeline(
+        [
+            node(
+                func=train_linear_regression,
+                inputs=["X_train", "y_train"],
+                outputs="reg_model_lr",
+                name="train_linear_regression_node",
+            ),
+            node(
+                func=predict,
+                inputs=["reg_model_lr", "X_test"],
+                outputs="y_pred_lr",
+                name="predict_lr_node",
+            ),
+            node(
+                func=evaluate_model,
+                inputs=["reg_model_lr", "y_test", "y_pred_lr", "X_reference"],
+                outputs=[
+                    "r2_score_lr",
+                    "metrics_lr",
+                    "evaluation_output_lr",
+                ],
+                name="evaluate_lr_node",
+            ),
+        ]
+    )
+
+    # --- Pipeline para Random Forest ---
+    random_forest_pipeline = pipeline(
+        [
+            node(
+                func=train_random_forest,
+                inputs=["X_train", "y_train", "params:model_regression"],
+                outputs="reg_model_rf",
+                name="train_random_forest_node",
+            ),
+            node(
+                func=predict,
+                inputs=["reg_model_rf", "X_test"],
+                outputs="y_pred_rf",
+                name="predict_rf_node",
+            ),
+            node(
+                func=evaluate_model,
+                inputs=["reg_model_rf", "y_test", "y_pred_rf", "X_reference"],
+                outputs=["r2_score_rf", "metrics_rf", "evaluation_output_rf"],
+                name="evaluate_rf_node",
+            ),
+        ]
+    )
+
+    # --- Pipeline para XGBoost ---
+    xgboost_pipeline = pipeline(
+        [
+            node(
+                func=train_xgboost,
+                inputs=["X_train", "y_train", "params:model_regression"],
+                outputs="reg_model_xgb",
+                name="train_xgboost_node",
+            ),
+            node(
+                func=predict,
+                inputs=["reg_model_xgb", "X_test"],
+                outputs="y_pred_xgb",
+                name="predict_xgb_node",
+            ),
+            node(
+                func=evaluate_model,
+                inputs=["reg_model_xgb", "y_test", "y_pred_xgb", "X_reference"],
+                outputs=[
+                    "r2_score_xgb",
+                    "metrics_xgb",
+                    "evaluation_output_xgb",
+                ],
+                name="evaluate_xgb_node",
+            ),
+        ]
+    )
+
+    return (
+        data_preparation_pipeline
+        + linear_regression_pipeline
+        + random_forest_pipeline
+        + xgboost_pipeline
     )
