@@ -188,8 +188,8 @@ Sigue estos pasos para configurar y ejecutar el proyecto en tu máquina local. S
 Primero, clona este repositorio.
 
 ```bash
-git clone https://github.com/J-Lopez-IICG/MedicalCostKedro.git
-cd MedicalCostKedro-WorkInProgress
+git clone https://github.com/J-Lopez-IICG/MedicalCost-RegressionAndClassification.git
+cd MedicalCost-RegressionAndClassification
 ```
 
 ### 2. Crear y Activar un Entorno Virtual
