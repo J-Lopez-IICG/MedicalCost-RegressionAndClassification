@@ -10,8 +10,8 @@ scikit-learn
 mypy
 numpy
 kagglehub
-kedro-datasets
 kedro-viz
 kaggle
 xgboost
 pandera
+kedro-datasets[matplotlib]

@@ -129,7 +129,6 @@ El objetivo aquí era responder: **¿Podemos predecir el costo exacto del seguro
 | ... (otras)       | < 0.015     |
 
 > ✅ **Conclusión de Regresión**: Es posible predecir los costos con alta precisión (R² > 0.90), y ser fumador (`smoker_yes`) es, por un margen abrumador, el factor más determinante.
-> ✅ **Conclusión de Regresión**: Es posible predecir los costos con alta precisión (R² ≈ 0.90), y ser fumador (`smoker_yes`) es, por un margen abrumador, el factor más determinante.
 
 ### Acto 3: Clasificación del Riesgo de Costo (Clasificación)
 
@@ -143,12 +142,12 @@ Finalmente, se buscó responder: **¿Podemos clasificar a los pacientes en categ
 
 | Modelo                          | Accuracy (Precisión Final) |
 | :------------------------------ | :------------------------: |
-| **XGBoost**                     |         **94.78%**         |
-| Random Forest                   |           94.78%           |
+| **Random Forest**               |         **94.78%**         |
+| XGBoost                         |           94.40%           |
 | Support Vector Classifier (SVC) |           92.91%           |
 | Regresión Logística             |           90.67%           |
 
-> El modelo **RXGBoost** se corona como el campeón, logrando la mayor precisión en la clasificación de riesgo de costo. 🏆
+> El modelo **Random Forest optimizado** es el campeón indiscutible de este análisis, logrando la mayor precisión. 🏆
 
 3.  **Capacidad de Discriminación (Curvas ROC)**: La comparación de las curvas ROC confirma visualmente el rendimiento superior. Los modelos de ensamblaje y SVC se agrupan en la esquina superior izquierda, con áreas bajo la curva (AUC) de 0.95 o más, lo que indica una capacidad de discriminación casi perfecta.
 

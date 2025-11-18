@@ -120,59 +120,59 @@ log_reg_feature_importance:
 # ----------------------------------------------------------------------------------
 
 plot_smoker_vs_charges:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/exploratory/smoker_vs_charges.png
 
 plot_age_histogram:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/exploratory/plot_age_histogram.png
 
 plot_bmi_histogram:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/exploratory/plot_bmi_histogram.png
 
 plot_charges_histogram:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/exploratory/plot_charges_histogram.png
 
 plot_children_barplot:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/exploratory/plot_children_barplot.png
 
 plot_age_boxplot:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/exploratory/plot_age_boxplot.png
 
 plot_bmi_boxplot:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/exploratory/plot_bmi_boxplot.png
 
 plot_charges_boxplot:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/exploratory/plot_charges_boxplot.png
 
 plot_bmi_smoker_interaction:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/exploratory/bmi_smoker_interaction.png
 
 plot_correlation_heatmap:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/exploratory/correlation_heatmap.png
 
-plot_age_vs_charges_regression:
-  type: matplotlib.MatplotlibWriter
+plot_sex_vs_charges_regression:
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/exploratory/age_vs_charges_regression.png
 
 plot_bmi_vs_charges_regression:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/exploratory/bmi_vs_charges_regression.png
 
 plot_children_vs_charges_regression:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/exploratory/children_vs_charges_regression.png
 
 regression_feature_correlation_heatmap:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/regression/feature_correlation_heatmap.png
 
 evaluation_output_lr:
@@ -188,28 +188,28 @@ evaluation_output_xgb:
   filepath: data/08_reporting/regression/evaluation_output_xgb.txt
 
 plot_r2_comparison:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/regression/r2_comparison_plot.png
 
 # --- Gráficos del pipeline `model_classification` ---
 plot_log_reg_feature_importance:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/classification/feature_importance_log_reg.png
 
 plot_rf_grid_search_heatmap:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/classification/grid_search_heatmap_rf.png
 
 plot_xgb_grid_search_heatmap:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/classification/grid_search_heatmap_xgb.png
 
 plot_svc_grid_search_heatmap:
-  type: matplotlib.MatplotlibWriter
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/classification/grid_search_heatmap_svc.png
 
 plot_roc_curves_comparison:
-  type: matplotlib.MatplotlibDataset
+  type: kedro_datasets.matplotlib.MatplotlibDataset
   filepath: data/08_reporting/classification/roc_curves_comparison.png
 
 classification_summary_output:
